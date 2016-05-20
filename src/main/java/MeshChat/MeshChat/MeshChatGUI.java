@@ -36,6 +36,9 @@ public class MeshChatGUI extends JFrame{
 	
 	private void setFeatures() {
 		conversation = new JTextArea();
+		conversation.setEditable(false);
+		conversation.setLineWrap(true);
+		conversation.setWrapStyleWord(true);
 		IPaddress = new JLabel("My IP Address");
 		//connect is for the client to connect to a server
 		connect = new JButton("Connect"); //add ActionListener
