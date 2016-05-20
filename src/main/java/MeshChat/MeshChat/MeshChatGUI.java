@@ -2,6 +2,8 @@ package MeshChat.MeshChat;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +22,7 @@ public class MeshChatGUI extends JFrame{
 	private JTextArea conversation;
 	private JLabel IPaddress;
 	private JLabel enterIp;
+	private JLabel notifyMsg;
 	private JButton connect, send;
 	private JTextField text;
 	private JTextField serverIp;
@@ -38,6 +41,7 @@ public class MeshChatGUI extends JFrame{
 		this.setLayout(layout);
 		
 		setFeatures();
+		setButtons();
 	}
 
 	
@@ -47,6 +51,7 @@ public class MeshChatGUI extends JFrame{
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
 		IPaddress = new JLabel("My IP Address: " + client.getMyIpAddress(), SwingConstants.CENTER);
+		notifyMsg = new JLabel("");
 		enterIp = new JLabel("Enter IP Address: ");
 		serverIp = new JTextField(10);
 		//connect is for the client to connect to a server
@@ -68,6 +73,7 @@ public class MeshChatGUI extends JFrame{
 		topCenter.add(enterIp);
 		topCenter.add(serverIp);
 		topCenter.add(connect);
+		topCenter.add(notifyMsg);
 		top.add(topCenter, BorderLayout.CENTER);
 		
 		JPanel center = new JPanel();
@@ -81,6 +87,26 @@ public class MeshChatGUI extends JFrame{
 		add(center, BorderLayout.CENTER);
 		add(bottom, BorderLayout.PAGE_END);
 		
+	}
+	
+	public void setButtons(){
+		connect.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0) {
+				notifyMsg.setText(""); //clears error message
+				if (client.validateIP(serverIp.getText())){
+					if(client.connectToServer(serverIp.getText())){
+						notifyMsg.setText("Connected");
+					}
+					else{
+						notifyMsg.setText("Unable to Connect");
+					}
+				}
+				else{
+					notifyMsg.setText("Invalid IP Address Format");
+				}
+			}
+		});
 	}
 
 
