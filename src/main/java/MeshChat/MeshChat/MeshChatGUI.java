@@ -14,7 +14,6 @@ import javax.swing.SwingConstants;
 
 public class MeshChatGUI extends JFrame{
 	
-	private Server server;
 	private Client client;
 	
 	private JTextArea conversation;
@@ -28,7 +27,6 @@ public class MeshChatGUI extends JFrame{
 	public MeshChatGUI(){
 		
 		client = new Client();
-		server = new Server();
 		
 		setTitle("Mesh Chat");
 		setSize(600, 730);
