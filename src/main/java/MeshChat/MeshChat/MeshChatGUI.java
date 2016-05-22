@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,10 +24,14 @@ public class MeshChatGUI extends JFrame {
 	private JTextArea conversation, text;
 	private JLabel IPaddress, enterIp, notifyMsg;
 	private JButton connect, send;
-	private JTextField serverIp;
+	private JTextField serverIP;
 	private BorderLayout layout;
-	private String myName; //for sent messages
+	private String myName; // for sent messages
 	private int port;
+	
+	private final Pattern PATTERN = Pattern
+			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+	
 
 	public MeshChatGUI(String name, int portNum) {
 		setTitle("Mesh Chat");
@@ -42,7 +48,7 @@ public class MeshChatGUI extends JFrame {
 
 		setFeatures();
 		setButtons();
-		
+
 		server.sendTextArea(conversation);
 	}
 
@@ -51,14 +57,12 @@ public class MeshChatGUI extends JFrame {
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
-		IPaddress = new JLabel("My IP Address: " + server.getMyIpAddress() + 
-				"      Using port: " + port,
-				SwingConstants.CENTER);
+		IPaddress = new JLabel("My IP Address: " + server.getMyIpAddress()
+				+ "      Using port: " + port, SwingConstants.CENTER);
 		notifyMsg = new JLabel("");
 		enterIp = new JLabel("Enter IP Address: ");
-		serverIp = new JTextField(10);
-		connect = new JButton("Connect"); // client-server to connect to a
-											// server
+		serverIP = new JTextField(10);
+		connect = new JButton("Connect"); // client to connect to a server
 		send = new JButton("Send"); // server sending out to all clients in its
 									// branches
 		text = new JTextArea();
@@ -80,7 +84,7 @@ public class MeshChatGUI extends JFrame {
 		JPanel topCenter = new JPanel();
 		top.add(IPaddress, BorderLayout.NORTH);
 		topCenter.add(enterIp);
-		topCenter.add(serverIp);
+		topCenter.add(serverIP);
 		topCenter.add(connect);
 		topCenter.add(notifyMsg);
 		top.add(topCenter, BorderLayout.CENTER);
@@ -103,22 +107,32 @@ public class MeshChatGUI extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 				notifyMsg.setText(""); // clears error message
-				
-				//when request to connect to server, then you become a client
-				Client client = new Client(); 
-				if (client.validateIP(serverIp.getText())) {
-					if (client.connectToServer(serverIp.getText())) {
-						notifyMsg.setText("Connected");
+
+				// when request to connect to server, then you become a client
+				ClientSocket client;
+				try {
+					if (validateIP(serverIP.getText())) {
+						client = new ClientSocket(myName, serverIP.getText());
+
+						if (client.connectToServer()) {
+							notifyMsg.setText("Connected");
+						} else {
+							notifyMsg.setText("Unable to Connect");
+						}
 					} else {
-						notifyMsg.setText("Unable to Connect");
+						notifyMsg.setText("Invalid IP Address Format");
 					}
-				} else {
-					notifyMsg.setText("Invalid IP Address Format");
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
+			}
+
+			private boolean validateIP(String ipAddress) {
+				return PATTERN.matcher(ipAddress).matches();
 			}
 		});
 
-		serverIp.addKeyListener(new KeyListener() {
+		serverIP.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -128,10 +142,12 @@ public class MeshChatGUI extends JFrame {
 			}
 
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+			}
 
 			@Override
-			public void keyTyped(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {
+			}
 		});
 
 		send.addActionListener(new ActionListener() {
@@ -145,7 +161,7 @@ public class MeshChatGUI extends JFrame {
 			}
 
 		});
-		
+
 		text.addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -156,10 +172,12 @@ public class MeshChatGUI extends JFrame {
 			}
 
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+			}
 
 			@Override
-			public void keyTyped(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {
+			}
 		});
 	}
 }
