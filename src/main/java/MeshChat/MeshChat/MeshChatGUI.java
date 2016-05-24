@@ -1,14 +1,13 @@
 package MeshChat.MeshChat;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.regex.Pattern;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -115,7 +114,7 @@ public class MeshChatGUI extends JFrame {
 				// when request to connect to server, then you become a client
 				Client client;
 				if (validateIP(serverIP.getText())) {
-					client = new Client(myName, serverIP.getText(), port);
+					client = new Client(server.getMyIpAddress(), serverIP.getText(), port);
 
 					if (client.connectToServer()) {
 						notifyMsg.setText("Connected");
