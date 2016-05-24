@@ -3,39 +3,35 @@ package MeshChat.MeshChat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 public class Server {
 
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private ServerSocket server;
-	private ClientSocket socket;
-	private List<ClientSocket> clients;
+	private Socket socket;
+	private List<Socket> clients;
 	private String myName;
 	private JTextArea conversation = null;
+	private int port;
 
-	public Server(String name, int port) {
+	public Server(String name, int prt) {
 		myName = name.toUpperCase();
+		port = prt;
 		try {
-			server = new ServerSocket(port, 100);
-			clients = new ArrayList<ClientSocket>();
-			startRunning();
+			server = new ServerSocket(port);
+			clients = new ArrayList<Socket>();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				server.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -49,13 +45,13 @@ public class Server {
 		 * clients in array make sure no client receives same message twice.
 		 */
 		if (conversation != null) {
-			SwingUtilities.invokeLater(new Runnable() {
+			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
 					while (true) {
 						try {
-							socket = (ClientSocket) server.accept();
+							socket = server.accept();
 							output = new ObjectOutputStream(socket
 									.getOutputStream());
 							String clientAddress = socket.getInetAddress()
@@ -69,13 +65,12 @@ public class Server {
 							conversation
 									.append("\n\t Got a new connection from "
 											+ clientAddress + "\n");
-
-						} catch (IOException e) {
-							// e.printStackTrace();
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				}
-			});
+			}).start();
 		}
 	}
 

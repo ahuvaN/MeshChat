@@ -51,6 +51,10 @@ public class MeshChatGUI extends JFrame {
 
 		server.sendTextArea(conversation);
 	}
+	
+	public void startRunning(){
+		server.startRunning();
+	}
 
 	private void setFeatures() {
 		conversation = new JTextArea();
@@ -109,21 +113,17 @@ public class MeshChatGUI extends JFrame {
 				notifyMsg.setText(""); // clears error message
 
 				// when request to connect to server, then you become a client
-				ClientSocket client;
-				try {
-					if (validateIP(serverIP.getText())) {
-						client = new ClientSocket(myName, serverIP.getText());
+				Client client;
+				if (validateIP(serverIP.getText())) {
+					client = new Client(myName, serverIP.getText(), port);
 
-						if (client.connectToServer()) {
-							notifyMsg.setText("Connected");
-						} else {
-							notifyMsg.setText("Unable to Connect");
-						}
+					if (client.connectToServer()) {
+						notifyMsg.setText("Connected");
 					} else {
-						notifyMsg.setText("Invalid IP Address Format");
+						notifyMsg.setText("Unable to Connect");
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
+				} else {
+					notifyMsg.setText("Invalid IP Address Format");
 				}
 			}
 

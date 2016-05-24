@@ -64,7 +64,10 @@ public class ServerStart extends JFrame {
 				try {
 					serverPort = Integer.parseInt(port.getText());
 					me.dispose();
-					new MeshChatGUI(serverName, serverPort).setVisible(true);
+					MeshChatGUI g = new MeshChatGUI(serverName, serverPort);
+					g.setVisible(true);
+					g.startRunning();
+					
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Invalid port number");
 					port.setText("");
