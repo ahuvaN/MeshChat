@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -196,10 +199,16 @@ public class MeshChatGUI extends JFrame {
 				{
 					JFileChooser filesave=new JFileChooser();
 					filesave.showSaveDialog(getContentPane());
-					BufferedWriter writer=new BufferedWriter(new FileWriter(filesave.getSelectedFile()+".txt"));
-					writer.write(conversation.getText());
-					writer.flush();
-					writer.close();
+					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile()+".txt"));
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+					
+					String ln = System.getProperty("line.separator");
+					String text = conversation.getText() ;
+					String singleLine = text.replaceAll("\n", ln);
+					
+					bw.write(singleLine.toString(),0, singleLine.length());
+					bw.flush();
+					bw.close();
 				}
 				catch (Exception ex)
 				{
