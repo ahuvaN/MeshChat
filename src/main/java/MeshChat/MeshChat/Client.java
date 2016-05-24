@@ -3,12 +3,14 @@ package MeshChat.MeshChat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class Client {
 	
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
-	private ClientSocket client;
+	private Socket client;
 	private String myName, IP;
 	private int port;
 	
@@ -25,10 +27,11 @@ public class Client {
 	 */
 	public boolean connectToServer() {
 		try {
-			client = new ClientSocket(myName, IP, port);
+			// = new Socket(InetAddress.getByName(IP), port, InetAddress.getByName(myName), port);
+			client = new Socket(IP, port);
 
-			input = new ObjectInputStream(client.getSocket().getInputStream());
-			output = new ObjectOutputStream(client.getSocket().getOutputStream());
+			input = new ObjectInputStream(client.getInputStream());
+			output = new ObjectOutputStream(client.getOutputStream());
 			// DISPLAY IN GUI SUCCESSFUL CONNECTION
 			return true;
 		} catch (IOException e) {

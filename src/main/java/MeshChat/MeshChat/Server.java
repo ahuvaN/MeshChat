@@ -27,12 +27,8 @@ public class Server {
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
 		port = prt;
-		try {
-			server = new ServerSocket(port);
-			clients = new ArrayList<Socket>();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		clients = new ArrayList<Socket>();
+
 	}
 
 	public void startRunning() {
@@ -49,26 +45,33 @@ public class Server {
 
 				@Override
 				public void run() {
-					while (true) {
-						try {
-							socket = server.accept();
-							output = new ObjectOutputStream(socket
-									.getOutputStream());
-							String clientAddress = socket.getInetAddress()
-									.toString();
+					try {
+						server = new ServerSocket(port);
 
-							clients.add(socket);
+						while (true) {
+							try {
+								socket = server.accept();
+								output = new ObjectOutputStream(socket
+										.getOutputStream());
+								String clientAddress = socket.getInetAddress()
+										.toString();
 
-							Thread t = new Thread(new ClientHandler(socket,
-									conversation));
-							t.start();
-							conversation
-									.append("\n\t Got a new connection from "
-											+ clientAddress + "\n");
-						} catch (Exception e) {
-							e.printStackTrace();
+								clients.add(socket);
+
+								Thread t = new Thread(new ClientHandler(socket,
+										conversation));
+								t.start();
+								conversation
+										.append("\n\t     Got a new connection from "
+												+ clientAddress + "\n");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
+
 				}
 			}).start();
 		}

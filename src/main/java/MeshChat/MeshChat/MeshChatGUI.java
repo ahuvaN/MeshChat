@@ -115,7 +115,7 @@ public class MeshChatGUI extends JFrame {
 				// when request to connect to server, then you become a client
 				Client client;
 				if (validateIP(serverIP.getText())) {
-					client = new Client(myName, serverIP.getText(), port);
+					client = new Client(server.getMyIpAddress(), serverIP.getText(), port);
 
 					if (client.connectToServer()) {
 						notifyMsg.setText("Connected");
