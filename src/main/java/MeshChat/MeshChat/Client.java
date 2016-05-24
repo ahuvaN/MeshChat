@@ -3,7 +3,6 @@ package MeshChat.MeshChat;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client {
@@ -27,6 +26,9 @@ public class Client {
 	 */
 	public boolean connectToServer() {
 		try {
+
+			client = new Socket(IP, port);
+			// = new Socket(InetAddress.getByName(IP), port, InetAddress.getByName(myName), port);
 			client = new Socket(IP, port);
 			input = new ObjectInputStream(client.getInputStream());
 			output = new ObjectOutputStream(client.getOutputStream());
