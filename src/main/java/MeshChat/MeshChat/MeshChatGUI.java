@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -22,16 +23,15 @@ public class MeshChatGUI extends JFrame {
 
 	private Server server;
 	private JTextArea conversation, text;
-	private JLabel IPaddress, enterIp, notifyMsg;
+	private JLabel notifyMsg;
 	private JButton connect, send;
-	private JTextField serverIP;
+	private JTextField serverIP, serverPort;
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
-	
-	private final Pattern PATTERN = Pattern
-			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
-	
+
+	// private final Pattern PATTERN = Pattern
+	// .compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
 	public MeshChatGUI(String name, int portNum) {
 		setTitle("Mesh Chat");
@@ -51,8 +51,8 @@ public class MeshChatGUI extends JFrame {
 
 		server.sendTextArea(conversation);
 	}
-	
-	public void startRunning(){
+
+	public void startRunning() {
 		server.startRunning();
 	}
 
@@ -61,11 +61,9 @@ public class MeshChatGUI extends JFrame {
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
-		IPaddress = new JLabel("My IP Address: " + server.getMyIpAddress()
-				+ "      Using port: " + port, SwingConstants.CENTER);
 		notifyMsg = new JLabel("");
-		enterIp = new JLabel("Enter IP Address: ");
 		serverIP = new JTextField(10);
+		serverPort = new JTextField(4);
 		connect = new JButton("Connect"); // client to connect to a server
 		send = new JButton("Send"); // server sending out to all clients in its
 									// branches
@@ -86,9 +84,13 @@ public class MeshChatGUI extends JFrame {
 
 		JPanel top = new JPanel(new BorderLayout());
 		JPanel topCenter = new JPanel();
-		top.add(IPaddress, BorderLayout.NORTH);
-		topCenter.add(enterIp);
+		top.add(new JLabel("My IP Address: " + server.getMyIpAddress()
+				+ "      Using port: " + port, SwingConstants.CENTER),
+				BorderLayout.NORTH);
+		topCenter.add(new JLabel("Enter IP Address: "));
 		topCenter.add(serverIP);
+		topCenter.add(new JLabel("Enter Server Port: "));
+		topCenter.add(serverPort);
 		topCenter.add(connect);
 		topCenter.add(notifyMsg);
 		top.add(topCenter, BorderLayout.CENTER);
@@ -112,23 +114,47 @@ public class MeshChatGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				notifyMsg.setText(""); // clears error message
 
-				// when request to connect to server, then you become a client
-				Client client;
-				if (validateIP(serverIP.getText())) {
-					client = new Client(server.getMyIpAddress(), serverIP.getText(), port);
-
-					if (client.connectToServer()) {
-						notifyMsg.setText("Connected");
-					} else {
-						notifyMsg.setText("Unable to Connect");
-					}
+				// first check that serverIP and serverPort are not null
+				if (serverIP.getText().isEmpty()
+						|| serverPort.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null,
+							"Please enter a valid IP and 4 digit port");
 				} else {
-					notifyMsg.setText("Invalid IP Address Format");
+					// when you request to connect to server, then you become a
+					// client
+					Client client;
+					try {
+						client = new Client(conversation);
+						if (client.connectToServer(serverIP.getText(),
+								serverPort.getText())) {
+							notifyMsg.setText("Connected");
+							client.listenerForMessages();
+						} else {
+							notifyMsg.setText("Unable to Connect");
+						}
+					} catch (Exception e) {
+						notifyMsg.setText("Invalid IP Address Format");
+					}
+				}
+			}
+		});
+
+		serverPort.addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					// if serverIP == null, give it focus
+					e.consume();
+					connect.doClick();
 				}
 			}
 
-			private boolean validateIP(String ipAddress) {
-				return PATTERN.matcher(ipAddress).matches();
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
 			}
 		});
 
@@ -136,6 +162,7 @@ public class MeshChatGUI extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					// if serverPort == null, give it focus
 					e.consume();
 					connect.doClick();
 				}
@@ -154,10 +181,18 @@ public class MeshChatGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String txt = text.getText();
-				conversation.append("me: " + txt + "\n");
+				try{
+				String outgoing = text.getText();
+				conversation.append("me: " + outgoing + "\n");
+				server.getOutput().println(myName + outgoing); // TODO might not work as a server
 				text.setText("");
-				// sendToClients();
+				// TODO sendToClients(); ?? server.getOutput.println(...);
+				} catch(Exception e) {
+					e.printStackTrace();
+				} finally{
+					text.setText("");
+					text.requestFocus();
+				}
 			}
 
 		});

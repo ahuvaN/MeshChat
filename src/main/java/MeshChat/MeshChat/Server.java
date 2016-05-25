@@ -1,6 +1,8 @@
 package MeshChat.MeshChat;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -15,11 +17,25 @@ import javax.swing.JTextArea;
 
 public class Server {
 
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
+	private PrintWriter output;
+	private BufferedReader input;
 	private ServerSocket server;
 	private Socket socket;
 	private List<Socket> clients;
+	
+	
+	public PrintWriter getOutput() {
+		return output;
+	}
+
+	public BufferedReader getInput() {
+		return input;
+	}
+
+	public String getMyName() {
+		return myName;
+	}
+
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
@@ -51,8 +67,10 @@ public class Server {
 						while (true) {
 							try {
 								socket = server.accept();
-								output = new ObjectOutputStream(socket
-										.getOutputStream());
+								output = new PrintWriter(
+										socket.getOutputStream());
+								input = new BufferedReader(new InputStreamReader(
+										socket.getInputStream()));
 								String clientAddress = socket.getInetAddress()
 										.toString();
 
