@@ -1,11 +1,7 @@
 package MeshChat.MeshChat;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Iterator;
 
 import javax.swing.JTextArea;
 

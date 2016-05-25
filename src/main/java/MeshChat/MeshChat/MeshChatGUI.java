@@ -9,11 +9,8 @@ import java.awt.event.KeyListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -27,18 +24,25 @@ import javax.swing.SwingConstants;
 
 public class MeshChatGUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Server server;
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
-	private JTextField serverIP, serverPort;
+
 	private JLabel IPaddress, enterIp;
+
 	private JButton connect, send, save;
+	private JTextField serverIP, serverPort;
+
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
 
-	// private final Pattern PATTERN = Pattern
-	// .compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+	private final Pattern PATTERN = Pattern
+			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
 	public MeshChatGUI(String name, int portNum) {
 		setTitle("Mesh Chat");
@@ -78,22 +82,19 @@ public class MeshChatGUI extends JFrame {
 		save = new JButton("Save Chat");
 		conversation.setBounds(0, 0, 500, 700);
 
-		JScrollPane scrollPane1 = new JScrollPane(conversation,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane1 = new JScrollPane(conversation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane1.setPreferredSize(new Dimension(525, 725));
 		scrollPane1.setBounds(0, 0, 500, 500);
 
-		JScrollPane scrollPane2 = new JScrollPane(text,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane2 = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane2.setPreferredSize(new Dimension(450, 55));
 
 		JPanel top = new JPanel(new BorderLayout());
 		JPanel topCenter = new JPanel();
-		top.add(new JLabel("My IP Address: " + server.getMyIpAddress()
-				+ "      Using port: " + port, SwingConstants.CENTER),
-				BorderLayout.NORTH);
+		top.add(new JLabel("My IP Address: " + server.getMyIpAddress() + "      Using port: " + port,
+				SwingConstants.CENTER), BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
 		topCenter.add(serverIP);
 		topCenter.add(new JLabel("Enter Server Port: "));
@@ -127,22 +128,22 @@ public class MeshChatGUI extends JFrame {
 				notifyMsg.setText(""); // clears error message
 
 				// first check that serverIP and serverPort are not null
-				if (serverIP.getText().isEmpty()
-						|| serverPort.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null,
-							"Please enter a valid IP and 4 digit port");
+				if (serverIP.getText().isEmpty() || serverPort.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Please enter a valid IP and 4 digit port");
 				} else {
 					// when you request to connect to server, then you become a
 					// client
 					Client client;
 					try {
 						client = new Client(conversation);
-						if (client.connectToServer(serverIP.getText(),
-								serverPort.getText())) {
-							notifyMsg.setText("Connected");
-							client.listenerForMessages();
-						} else {
-							notifyMsg.setText("Unable to Connect");
+						boolean valid = validateIP(serverIP.getText());
+						if (valid) {
+							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
+								notifyMsg.setText("Connected");
+								client.listenerForMessages();
+							} else {
+								notifyMsg.setText("Unable to Connect");
+							}
 						}
 					} catch (Exception e) {
 						notifyMsg.setText("Invalid IP Address Format");
@@ -171,7 +172,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		serverIP.addKeyListener(new KeyListener() {
-			
+
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverPort == null, give it focus
@@ -180,28 +181,28 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		send.addActionListener(new ActionListener() {
 
-			
 			public void actionPerformed(ActionEvent arg0) {
-				try{
-				String outgoing = text.getText();
-				conversation.append("me: " + outgoing + "\n");
-				server.getOutput().println(myName + outgoing); // TODO might not work as a server
-				text.setText("");
-				// TODO sendToClients(); ?? server.getOutput.println(...);
-				} catch(Exception e) {
+				try {
+					String outgoing = text.getText();
+					conversation.append("me: " + outgoing + "\n");
+					server.getOutput().println(myName + outgoing); // TODO might
+																	// not work
+																	// as a
+																	// server
+					text.setText("");
+					// TODO sendToClients(); ?? server.getOutput.println(...);
+				} catch (Exception e) {
 					e.printStackTrace();
-				} finally{
+				} finally {
 					text.setText("");
 					text.requestFocus();
 				}
@@ -210,7 +211,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		text.addKeyListener(new KeyListener() {
-			
+
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -218,40 +219,39 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
-		
-		save.addActionListener(new ActionListener(){
+
+		save.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				try
-				{
-					JFileChooser filesave=new JFileChooser();
+				try {
+					JFileChooser filesave = new JFileChooser();
 					filesave.showSaveDialog(getContentPane());
-					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile()+".txt"));
+					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile() + ".txt"));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-					
+
 					String ln = System.getProperty("line.separator");
-					String text = conversation.getText() ;
+					String text = conversation.getText();
 					String singleLine = text.replaceAll("\n", ln);
-					
-					bw.write(singleLine.toString(),0, singleLine.length());
+
+					bw.write(singleLine.toString(), 0, singleLine.length());
 					bw.flush();
 					bw.close();
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			}
-			
+
 		});
 	}
+
+	public boolean validateIP(String ipAddress) {
+		return PATTERN.matcher(ipAddress).matches();
+	}
+
 }

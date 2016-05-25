@@ -15,6 +15,10 @@ import javax.swing.JTextField;
 
 public class ServerStart extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel nameLabel, portLabel;
 	private JTextField name, port;
 	private JButton start;
