@@ -29,15 +29,10 @@ public class MeshChatGUI extends JFrame {
 
 	private Server server;
 	private JTextArea conversation, text;
-<<<<<<< HEAD
 	private JLabel notifyMsg;
-	private JButton connect, send;
 	private JTextField serverIP, serverPort;
-=======
-	private JLabel IPaddress, enterIp, notifyMsg;
+	private JLabel IPaddress, enterIp;
 	private JButton connect, send, save;
-	private JTextField serverIP;
->>>>>>> 683ff9e82f0f5082b305a154002c68f53a69adcf
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
