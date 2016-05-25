@@ -43,7 +43,6 @@ public class Client {
 	 */
 	public boolean connectToServer(String IP, String prt) {
 		try {
-			IP = isValidIP(IP);
 			int port = isValidPort(prt);
 			client = new Socket(IP, port);
 			input = new BufferedReader(new InputStreamReader(
@@ -69,34 +68,6 @@ public class Client {
 
 	public BufferedReader getInput() {
 		return input;
-	}
-
-	private String isValidIP(String input) throws Exception {
-		if (input == null)
-			throw new Exception();
-		int length = input.length();
-		if (length == 0)
-			throw new Exception();
-		int i = 0;
-		if (input.charAt(0) == '-') {
-			if (length == 1)
-				throw new Exception();
-			i = 1;
-		}
-		for (; i < length; i++) {
-			char c = input.charAt(i);
-			if (c <= '/' || c >= ':')
-				throw new Exception();
-		}
-		try {
-			int n = Integer.parseInt(input);
-			if (n >= 0 && n <= 255)
-				return input;
-			else
-				throw new Exception();
-		} catch (Exception e) {
-			throw new Exception();
-		}
 	}
 
 	public void listenerForMessages() {
