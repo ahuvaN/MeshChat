@@ -59,7 +59,7 @@ public class Server {
 		if (conversation != null) {
 			new Thread(new Runnable() {
 
-				@Override
+				
 				public void run() {
 					try {
 						server = new ServerSocket(port);

@@ -6,10 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,9 +29,15 @@ public class MeshChatGUI extends JFrame {
 
 	private Server server;
 	private JTextArea conversation, text;
+<<<<<<< HEAD
 	private JLabel notifyMsg;
 	private JButton connect, send;
 	private JTextField serverIP, serverPort;
+=======
+	private JLabel IPaddress, enterIp, notifyMsg;
+	private JButton connect, send, save;
+	private JTextField serverIP;
+>>>>>>> 683ff9e82f0f5082b305a154002c68f53a69adcf
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
@@ -68,7 +80,7 @@ public class MeshChatGUI extends JFrame {
 		send = new JButton("Send"); // server sending out to all clients in its
 									// branches
 		text = new JTextArea();
-
+		save = new JButton("Save Chat");
 		conversation.setBounds(0, 0, 500, 700);
 
 		JScrollPane scrollPane1 = new JScrollPane(conversation,
@@ -98,9 +110,14 @@ public class MeshChatGUI extends JFrame {
 		JPanel center = new JPanel();
 		center.add(scrollPane1);
 
-		JPanel bottom = new JPanel();
-		bottom.add(scrollPane2);
-		bottom.add(send);
+		JPanel bottom = new JPanel(new BorderLayout());
+		JPanel bottomCenter = new JPanel();
+		JPanel bottomSouth = new JPanel();
+		bottomCenter.add(scrollPane2);
+		bottomCenter.add(send);
+		bottomSouth.add(save);
+		bottom.add(bottomCenter, BorderLayout.CENTER);
+		bottom.add(bottomSouth, BorderLayout.SOUTH);
 
 		add(top, BorderLayout.PAGE_START);
 		add(center, BorderLayout.CENTER);
@@ -159,7 +176,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		serverIP.addKeyListener(new KeyListener() {
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverPort == null, give it focus
@@ -168,18 +185,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		send.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 				try{
 				String outgoing = text.getText();
@@ -198,7 +215,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		text.addKeyListener(new KeyListener() {
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -206,13 +223,40 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
+		});
+		
+		save.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try
+				{
+					JFileChooser filesave=new JFileChooser();
+					filesave.showSaveDialog(getContentPane());
+					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile()+".txt"));
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+					
+					String ln = System.getProperty("line.separator");
+					String text = conversation.getText() ;
+					String singleLine = text.replaceAll("\n", ln);
+					
+					bw.write(singleLine.toString(),0, singleLine.length());
+					bw.flush();
+					bw.close();
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+			
 		});
 	}
 }
