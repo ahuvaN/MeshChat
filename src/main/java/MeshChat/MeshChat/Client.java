@@ -58,6 +58,17 @@ public class Client {
 			return false;
 		}
 	}
+	
+	public void sendMessage(String message){
+		try{
+		output.println(message);
+		output.flush();
+		}
+		catch(Exception e){
+			System.out.println("couldn't send");
+			e.printStackTrace();
+		}
+	}
 
 	public PrintWriter getOutput() {
 		return output;
@@ -70,7 +81,7 @@ public class Client {
 	public void listenerForMessages() {
 		Thread readerThread = new Thread(new Runnable() {
 
-			@Override
+			
 			public void run() {
 				String incoming;
 				try{

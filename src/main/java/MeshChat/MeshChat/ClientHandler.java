@@ -1,15 +1,17 @@
 package MeshChat.MeshChat;
 
-import java.io.ObjectInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 import javax.swing.JTextArea;
 
 class ClientHandler implements Runnable
 {
-	ObjectInputStream reader;
+	
 	Socket clientsocket;
 	JTextArea conversation;
+	BufferedReader reader;
 	
 	ClientHandler(Socket socket, JTextArea convo)
 	{
@@ -17,7 +19,7 @@ class ClientHandler implements Runnable
 		{
 			conversation = convo;
 			clientsocket = socket;
-			reader = new ObjectInputStream(socket.getInputStream());
+			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
 		}
 		catch (Exception e)
 		{
@@ -29,9 +31,10 @@ class ClientHandler implements Runnable
 	public void run()
 	{
 		String message;
+		System.out.println("run");
 		try
 		{
-			while((message= (String)reader.readObject())!=null)
+			while((message= reader.readLine())!=null)
 			{
 				conversation.append(message+"\n");
 				sendEveryone(message);
@@ -46,6 +49,7 @@ class ClientHandler implements Runnable
 	
 	private void sendEveryone(String message)
 	{
+		
 		//replace with arrayList<Client>
 			/*Iterator it=clientOutputStreams.iterator();
 			

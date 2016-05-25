@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
@@ -24,11 +25,9 @@ import javax.swing.SwingConstants;
 
 public class MeshChatGUI extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Server server;
+	private Client client;
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
 
@@ -40,6 +39,7 @@ public class MeshChatGUI extends JFrame {
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
+
 
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -133,7 +133,7 @@ public class MeshChatGUI extends JFrame {
 				} else {
 					// when you request to connect to server, then you become a
 					// client
-					Client client;
+					
 					try {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
@@ -153,7 +153,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		serverPort.addKeyListener(new KeyListener() {
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverIP == null, give it focus
@@ -162,11 +162,11 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
@@ -191,21 +191,24 @@ public class MeshChatGUI extends JFrame {
 		send.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					String outgoing = text.getText();
-					conversation.append("me: " + outgoing + "\n");
-					server.getOutput().println(myName + outgoing); // TODO might
+				//try {
+					String outgoing = myName + ": " + text.getText();
+					//conversation.append("me: " + outgoing + "\n");
+					//client.getOutput().println( myName + ": " + outgoing);
+					//client.getOutput().flush();
+					//server.getOutput().println(myName + outgoing); // TODO might
 																	// not work
 																	// as a
 																	// server
-					text.setText("");
+					
 					// TODO sendToClients(); ?? server.getOutput.println(...);
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
+					client.sendMessage(outgoing);
+				//} catch (IOException e) {
+				//	e.printStackTrace();
+				//} finally {
 					text.setText("");
 					text.requestFocus();
-				}
+				//}
 			}
 
 		});
