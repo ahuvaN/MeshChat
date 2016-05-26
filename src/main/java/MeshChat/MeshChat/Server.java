@@ -20,20 +20,6 @@ public class Server {
 	private ServerSocket server;
 	private Socket socket;
 	private List<Socket> clients;
-	
-	
-	public PrintWriter getOutput() {
-		return output;
-	}
-
-	public BufferedReader getInput() {
-		return input;
-	}
-
-	public String getMyName() {
-		return myName;
-	}
-
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
@@ -43,6 +29,10 @@ public class Server {
 		port = prt;
 		clients = new ArrayList<Socket>();
 
+	}
+	
+	public Server(){
+		
 	}
 
 	public void startRunning() {
@@ -100,6 +90,22 @@ public class Server {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public PrintWriter getOutput() {
+		return output;
+	}
+
+	public BufferedReader getInput() {
+		return input;
+	}
+
+	public String getMyName() {
+		return myName;
+	}
+	
+	public List<Socket> getClients() {
+		return clients;
 	}
 
 	public void sendTextArea(JTextArea convo) {
