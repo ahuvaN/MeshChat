@@ -16,7 +16,7 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
-	private HashSet<Long> exactTimes = new HashSet<Long>();
+	private HashSet<String> exactTimes = new HashSet<String>();
 	private Server server = new Server();
 
 	public ClientHandler(Socket socket, JTextArea convo) {
@@ -24,8 +24,7 @@ public class ClientHandler implements Runnable {
 
 			conversation = convo;
 			clientsocket = socket;
-			reader = new BufferedReader(new InputStreamReader(
-					clientsocket.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,7 +37,7 @@ public class ClientHandler implements Runnable {
 
 		try {
 			while ((message = reader.readLine()) != null) {
-				if (exactTimes.add(Long.parseLong(message))) {
+				if (exactTimes.add(message)) {
 					message = reader.readLine();
 					conversation.append(message + "\n");
 					sendEveryone(message);
@@ -58,8 +57,7 @@ public class ClientHandler implements Runnable {
 		while (it.hasNext()) {
 			try {
 
-				OutputStream outStream = (OutputStream) it.next()
-						.getOutputStream();
+				OutputStream outStream = (OutputStream) it.next().getOutputStream();
 				((PrintStream) outStream).println(message);
 				outStream.flush();
 

@@ -40,7 +40,6 @@ public class MeshChatGUI extends JFrame {
 	private String myName; // for sent messages
 	private int port;
 
-
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
@@ -133,7 +132,7 @@ public class MeshChatGUI extends JFrame {
 				} else {
 					// when you request to connect to server, then you become a
 					// client
-					
+
 					try {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
@@ -153,7 +152,7 @@ public class MeshChatGUI extends JFrame {
 		});
 
 		serverPort.addKeyListener(new KeyListener() {
-			
+
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverIP == null, give it focus
@@ -162,11 +161,9 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
@@ -191,24 +188,23 @@ public class MeshChatGUI extends JFrame {
 		send.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-			
-					String outgoing = myName + ": " + text.getText();
-					//conversation.append("me: " + outgoing + "\n");
-					//client.getOutput().println( myName + ": " + outgoing);
-					//client.getOutput().flush();
-					//server.getOutput().println(myName + outgoing); // TODO might
-																	// not work
-																	// as a
-																	// server
-					
-					// TODO sendToClients(); ?? server.getOutput.println(...);
 
-					
-					Long exactTime = System.currentTimeMillis();
-					client.sendMessage(outgoing, exactTime);
-					text.setText("");
-					text.requestFocus();
-				//}
+				String outgoing = myName + ": " + text.getText();
+				// conversation.append("me: " + outgoing + "\n");
+				// client.getOutput().println( myName + ": " + outgoing);
+				// client.getOutput().flush();
+				// server.getOutput().println(myName + outgoing); // TODO might
+				// not work
+				// as a
+				// server
+
+				// TODO sendToClients(); ?? server.getOutput.println(...);
+
+				Long exactTime = System.currentTimeMillis();
+				client.sendMessage(outgoing, exactTime + serverIP.getText());
+				text.setText("");
+				text.requestFocus();
+				// }
 			}
 
 		});
