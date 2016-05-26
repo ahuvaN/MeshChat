@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.JTextArea;
@@ -15,10 +16,12 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
+	private HashSet<Long> exactTimes = new HashSet<Long>();
 	private Server server = new Server();
 
 	public ClientHandler(Socket socket, JTextArea convo) {
 		try {
+
 			conversation = convo;
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(
@@ -32,10 +35,16 @@ public class ClientHandler implements Runnable {
 	public void run() {
 		String message;
 		System.out.println("run");
+
 		try {
 			while ((message = reader.readLine()) != null) {
-				conversation.append(message + "\n");
-				sendEveryone(message);
+				if (exactTimes.add(Long.parseLong(message))) {
+					message = reader.readLine();
+					conversation.append(message + "\n");
+					sendEveryone(message);
+				} else {
+					reader.readLine();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,7 +62,7 @@ public class ClientHandler implements Runnable {
 						.getOutputStream();
 				((PrintStream) outStream).println(message);
 				outStream.flush();
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

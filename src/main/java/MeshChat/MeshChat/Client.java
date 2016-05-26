@@ -59,8 +59,10 @@ public class Client {
 		}
 	}
 	
-	public void sendMessage(String message){
+	public void sendMessage(String message, Long exactTime){
 		try{
+		output.write(String.valueOf(exactTime));
+		output.println();
 		output.println(message);
 		output.flush();
 		}
