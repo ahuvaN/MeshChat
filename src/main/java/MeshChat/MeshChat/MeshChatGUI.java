@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -80,19 +81,22 @@ public class MeshChatGUI extends JFrame {
 		save = new JButton("Save Chat");
 		conversation.setBounds(0, 0, 500, 700);
 
-		JScrollPane scrollPane1 = new JScrollPane(conversation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane1 = new JScrollPane(conversation,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane1.setPreferredSize(new Dimension(525, 725));
 		scrollPane1.setBounds(0, 0, 500, 500);
 
-		JScrollPane scrollPane2 = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane2 = new JScrollPane(text,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane2.setPreferredSize(new Dimension(450, 55));
 
 		JPanel top = new JPanel(new BorderLayout());
 		JPanel topCenter = new JPanel();
-		top.add(new JLabel("My IP Address: " + server.getMyIpAddress() + "      Using port: " + port,
-				SwingConstants.CENTER), BorderLayout.NORTH);
+		top.add(new JLabel("My IP Address: " + server.getMyIpAddress()
+				+ "      Using port: " + port, SwingConstants.CENTER),
+				BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
 		topCenter.add(serverIP);
 		topCenter.add(new JLabel("Enter Server Port: "));
@@ -126,8 +130,10 @@ public class MeshChatGUI extends JFrame {
 				notifyMsg.setText(""); // clears error message
 
 				// first check that serverIP and serverPort are not null
-				if (serverIP.getText().isEmpty() || serverPort.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Please enter a valid IP and 4 digit port");
+				if (serverIP.getText().isEmpty()
+						|| serverPort.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null,
+							"Please enter a valid IP and valid port");
 				} else {
 					// when you request to connect to server, then you become a
 					// client
@@ -136,15 +142,20 @@ public class MeshChatGUI extends JFrame {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
+							if (client.connectToServer(serverIP.getText(),
+									serverPort.getText())) {
 								notifyMsg.setText("Connected");
 								client.listenerForMessages();
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}
+						} else {
+							JOptionPane
+									.showMessageDialog(null,
+											"You did not enter a valid IP Address. Please try again.");
+							serverIP.setText("");
 						}
 					} catch (Exception e) {
-						notifyMsg.setText("Invalid IP Address Format");
 					}
 				}
 			}
@@ -199,8 +210,13 @@ public class MeshChatGUI extends JFrame {
 
 				// TODO sendToClients(); ?? server.getOutput.println(...);
 
+				// } catch (IOException e) {
+				// e.printStackTrace();
+				// } finally {
+
 				Long exactTime = System.currentTimeMillis();
 				client.sendMessage(outgoing, exactTime + serverIP.getText());
+
 				text.setText("");
 				text.requestFocus();
 				// }
@@ -230,8 +246,10 @@ public class MeshChatGUI extends JFrame {
 				try {
 					JFileChooser filesave = new JFileChooser();
 					filesave.showSaveDialog(getContentPane());
-					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile() + ".txt"));
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+					FileOutputStream fos = new FileOutputStream(new File(
+							filesave.getSelectedFile() + ".txt"));
+					BufferedWriter bw = new BufferedWriter(
+							new OutputStreamWriter(fos));
 
 					String ln = System.getProperty("line.separator");
 					String text = conversation.getText();
@@ -241,6 +259,8 @@ public class MeshChatGUI extends JFrame {
 					bw.flush();
 					bw.close();
 				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null,
+							"The log was not saved successfully.");
 					ex.printStackTrace();
 				}
 			}
