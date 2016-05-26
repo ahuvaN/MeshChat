@@ -3,6 +3,7 @@ package MeshChat.MeshChat;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.HashSet;
 
 import javax.swing.JTextArea;
 
@@ -12,6 +13,7 @@ class ClientHandler implements Runnable
 	Socket clientsocket;
 	JTextArea conversation;
 	BufferedReader reader;
+	HashSet<Long> exactTimes = new HashSet<Long>();
 	
 	ClientHandler(Socket socket, JTextArea convo)
 	{
@@ -31,13 +33,19 @@ class ClientHandler implements Runnable
 	public void run()
 	{
 		String message;
-		System.out.println("run");
+		Long exactTime;
 		try
 		{
 			while((message= reader.readLine())!=null)
 			{
-				conversation.append(message+"\n");
-				sendEveryone(message);
+				if (exactTimes.add(Long.parseLong(message))){
+					message=reader.readLine();
+					conversation.append(message+"\n");
+					sendEveryone(message);
+				}
+				else{
+					reader.readLine();
+				}
 			}
 		}
 		catch (Exception e)

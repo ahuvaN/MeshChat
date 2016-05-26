@@ -191,7 +191,7 @@ public class MeshChatGUI extends JFrame {
 		send.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				//try {
+			
 					String outgoing = myName + ": " + text.getText();
 					//conversation.append("me: " + outgoing + "\n");
 					//client.getOutput().println( myName + ": " + outgoing);
@@ -202,10 +202,10 @@ public class MeshChatGUI extends JFrame {
 																	// server
 					
 					// TODO sendToClients(); ?? server.getOutput.println(...);
-					client.sendMessage(outgoing);
-				//} catch (IOException e) {
-				//	e.printStackTrace();
-				//} finally {
+
+					
+					Long exactTime = System.currentTimeMillis();
+					client.sendMessage(outgoing, exactTime);
 					text.setText("");
 					text.requestFocus();
 				//}
