@@ -67,14 +67,16 @@ public class Client {
 		}
 	}
 
-	public void sendMessage(String message) {
+	public void sendMessage(String message, String exactTime) {
 		try {
+			output.write(exactTime);
+			output.println();
 			output.println(message);
 			output.flush();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null,
 					"The message could not be sent.");
-			e.printStackTrace();
+
 		}
 	}
 
