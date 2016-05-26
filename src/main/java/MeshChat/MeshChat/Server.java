@@ -20,7 +20,7 @@ public class Server {
 	private BufferedReader input;
 	private ServerSocket server;
 	private Socket socket;
-	private List<Socket> clients;
+	private List<PrintWriter> clients;
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
@@ -28,12 +28,12 @@ public class Server {
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
 		port = prt;
-		clients = new ArrayList<Socket>();
+		clients = new ArrayList<PrintWriter>();
 
 	}
-	
-	public Server(){
-		
+
+	public Server() {
+
 	}
 
 	public void startRunning() {
@@ -48,7 +48,6 @@ public class Server {
 		if (conversation != null) {
 			new Thread(new Runnable() {
 
-				
 				public void run() {
 					try {
 						server = new ServerSocket(port);
@@ -56,21 +55,15 @@ public class Server {
 						while (true) {
 							try {
 								socket = server.accept();
-								output = new PrintWriter(
-										socket.getOutputStream());
-								input = new BufferedReader(new InputStreamReader(
-										socket.getInputStream()));
-								String clientAddress = socket.getInetAddress()
-										.toString();
+								output = new PrintWriter(socket.getOutputStream());
+								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+								String clientAddress = socket.getInetAddress().toString();
+								PrintWriter writer = new PrintWriter(socket.getOutputStream());
+								clients.add(writer);
 
-								clients.add(socket);
-
-								Thread t = new Thread(new ClientHandler(socket,
-										conversation));
+								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
 								t.start();
-								conversation
-										.append("\n\t     Got a new connection from "
-												+ clientAddress + "\n");
+								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -104,28 +97,22 @@ public class Server {
 	public String getMyName() {
 		return myName;
 	}
-	
-	public List<Socket> getClients() {
-		return clients;
-	}
 
 	public void sendTextArea(JTextArea convo) {
 		conversation = convo;
 	}
-
-	// option 2
-	/*
-	 * if (conversation != null) { SwingUtilities.invokeLater(new Runnable() {
-	 * public void run() {
-	 * 
-	 * while (true) { try { Socket clientSocket = server.accept(); int i = 0;
-	 * for (i = 0; i < maxClientsCount; i++) { if (threads[i] == null) {
-	 * (threads[i] = new ClientThread( conversation, clientSocket,
-	 * threads)).start(); break; } } if (i == maxClientsCount) {
-	 * ObjectOutputStream os = new ObjectOutputStream(
-	 * clientSocket.getOutputStream());
-	 * os.writeObject("Server too busy. Try later."); os.close();
-	 * clientSocket.close(); } } catch (IOException e) { System.out.println(e);
-	 * } finally { // closeUp(); // close all Streams } } } }); }
-	 */
 }
+// option 2
+/*
+ * if (conversation != null) { SwingUtilities.invokeLater(new Runnable() {
+ * public void run() {
+ * 
+ * while (true) { try { Socket clientSocket = server.accept(); int i = 0; for (i
+ * = 0; i < maxClientsCount; i++) { if (threads[i] == null) { (threads[i] = new
+ * ClientThread( conversation, clientSocket, threads)).start(); break; } } if (i
+ * == maxClientsCount) { ObjectOutputStream os = new ObjectOutputStream(
+ * clientSocket.getOutputStream()); os.writeObject("Server too busy. Try later."
+ * ); os.close(); clientSocket.close(); } } catch (IOException e) {
+ * System.out.println(e); } finally { // closeUp(); // close all Streams } } }
+ * }); }
+ */

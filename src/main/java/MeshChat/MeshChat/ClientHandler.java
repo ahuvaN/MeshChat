@@ -5,9 +5,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JTextArea;
 
@@ -19,9 +21,12 @@ public class ClientHandler implements Runnable {
 	private HashSet<String> exactTimes = new HashSet<String>();
 	private Server server = new Server();
 
-	public ClientHandler(Socket socket, JTextArea convo) {
+	private List<PrintWriter> clients;
+
+	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients) {
 		try {
 
+			this.clients = clients;
 			conversation = convo;
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
@@ -52,19 +57,18 @@ public class ClientHandler implements Runnable {
 	}
 
 	private void sendEveryone(String message) {
-		Iterator<Socket> it = server.getClients().iterator();
+		Iterator<PrintWriter> it = clients.iterator();
 
 		while (it.hasNext()) {
 			try {
 
-				OutputStream outStream = (OutputStream) it.next().getOutputStream();
-				((PrintStream) outStream).println(message);
-				outStream.flush();
+				PrintWriter writer = (PrintWriter) it.next();
+				writer.println(message);
+				writer.flush();
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 }
