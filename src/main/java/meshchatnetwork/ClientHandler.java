@@ -1,4 +1,4 @@
-package MeshChat.MeshChat;
+package meshchatnetwork;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

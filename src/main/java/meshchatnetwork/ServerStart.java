@@ -1,4 +1,4 @@
-package MeshChat.MeshChat;
+package meshchatnetwork;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

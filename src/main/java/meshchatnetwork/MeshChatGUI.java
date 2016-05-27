@@ -1,4 +1,4 @@
-package MeshChat.MeshChat;
+package meshchatnetwork;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
