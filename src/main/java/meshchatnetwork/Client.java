@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
@@ -60,10 +57,8 @@ public class Client {
 			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
 			return false;
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -115,7 +110,6 @@ public class Client {
 						} 
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		});

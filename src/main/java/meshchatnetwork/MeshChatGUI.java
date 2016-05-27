@@ -10,10 +10,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.regex.Pattern;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -32,12 +30,8 @@ public class MeshChatGUI extends JFrame {
 	private Client client, clientForServer;
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
-
-	private JLabel IPaddress, enterIp;
-
 	private JButton connect, send, save;
 	private JTextField serverIP, serverPort;
-
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
@@ -85,19 +79,22 @@ public class MeshChatGUI extends JFrame {
 		save = new JButton("Save Chat");
 		conversation.setBounds(0, 0, 500, 700);
 
-		JScrollPane scrollPane1 = new JScrollPane(conversation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane1 = new JScrollPane(conversation,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane1.setPreferredSize(new Dimension(525, 725));
 		scrollPane1.setBounds(0, 0, 500, 500);
 
-		JScrollPane scrollPane2 = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane scrollPane2 = new JScrollPane(text,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane2.setPreferredSize(new Dimension(450, 55));
 
 		JPanel top = new JPanel(new BorderLayout());
 		JPanel topCenter = new JPanel();
-		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress() + "      Using port: " + port,
-				SwingConstants.CENTER), BorderLayout.NORTH);
+		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress()
+				+ "      Using port: " + port, SwingConstants.CENTER),
+				BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
 		topCenter.add(serverIP);
 		topCenter.add(new JLabel("Enter Server Port: "));
@@ -131,8 +128,10 @@ public class MeshChatGUI extends JFrame {
 				notifyMsg.setText(""); // clears error message
 
 				// first check that serverIP and serverPort are not null
-				if (serverIP.getText().isEmpty() || serverPort.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Please enter a valid IP and valid port");
+				if (serverIP.getText().isEmpty()
+						|| serverPort.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null,
+							"Please enter a valid IP and valid port");
 				} else {
 					// when you request to connect to server, then you become a
 					// client
@@ -141,7 +140,8 @@ public class MeshChatGUI extends JFrame {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
+							if (client.connectToServer(serverIP.getText(),
+									serverPort.getText())) {
 								notifyMsg.setText("Connected");
 								clientForServer = client;
 								server.setClientForServer(clientForServer);
@@ -150,8 +150,9 @@ public class MeshChatGUI extends JFrame {
 								notifyMsg.setText("Unable to Connect");
 							}
 						} else {
-							JOptionPane.showMessageDialog(null,
-									"You did not enter a valid IP Address. Please try again.");
+							JOptionPane
+									.showMessageDialog(null,
+											"You did not enter a valid IP Address. Please try again.");
 							serverIP.setText("");
 						}
 					} catch (Exception e) {
@@ -199,12 +200,21 @@ public class MeshChatGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 
 				String outgoing = myName + ": " + text.getText();
-				String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
-				client.sendMessage(outgoing, exactTimeIPAddress, exclusiveTimeIP);
-				exclusiveTimeIP = client.getExclusiveLines();
-				text.setText("");
-				text.requestFocus();
-				exclusiveTimeIP = server.getExclusiveLines();
+				String exactTimeIPAddress = String.valueOf(System
+						.currentTimeMillis()) + serverIP.getText();
+				try {
+					client.sendMessage(outgoing, exactTimeIPAddress,
+							exclusiveTimeIP);
+					exclusiveTimeIP = client.getExclusiveLines();
+					text.setText("");
+					text.requestFocus();
+					exclusiveTimeIP = server.getExclusiveLines();
+				} catch (Exception ex) {
+					JOptionPane
+							.showMessageDialog(null,
+									"You must form a connection in order to send messages.");
+						text.setText("");
+				}
 			}
 		});
 
@@ -230,8 +240,10 @@ public class MeshChatGUI extends JFrame {
 				try {
 					JFileChooser filesave = new JFileChooser();
 					filesave.showSaveDialog(getContentPane());
-					FileOutputStream fos = new FileOutputStream(new File(filesave.getSelectedFile() + ".txt"));
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+					FileOutputStream fos = new FileOutputStream(new File(
+							filesave.getSelectedFile() + ".txt"));
+					BufferedWriter bw = new BufferedWriter(
+							new OutputStreamWriter(fos));
 
 					String ln = System.getProperty("line.separator");
 					String text = conversation.getText();
@@ -241,7 +253,8 @@ public class MeshChatGUI extends JFrame {
 					bw.flush();
 					bw.close();
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "The log was not saved successfully.");
+					JOptionPane.showMessageDialog(null,
+							"The log was not saved successfully.");
 					ex.printStackTrace();
 				}
 			}
@@ -251,4 +264,6 @@ public class MeshChatGUI extends JFrame {
 	public boolean validateIP(String ipAddress) {
 		return PATTERN.matcher(ipAddress).matches();
 	}
+	
+	
 }
