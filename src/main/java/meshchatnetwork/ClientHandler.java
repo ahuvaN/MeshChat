@@ -16,11 +16,11 @@ public class ClientHandler implements Runnable {
 	private JTextArea conversation;
 	private BufferedReader reader;
 	private PrintWriter output;
-	private HashSet<String> exactTimes = new HashSet<String>();
+	private HashSet<String> exactTimes;
 
 	private List<PrintWriter> clients;
 
-	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients) {
+	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients, HashSet<String> exactTimes) {
 		try {
 
 			this.clients = clients;
@@ -28,11 +28,19 @@ public class ClientHandler implements Runnable {
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
 			output = new PrintWriter(clientsocket.getOutputStream());
-
+			this.exactTimes = exactTimes;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public HashSet<String> getExactTimes() {
+		return exactTimes;
+	}
+
+	public void setExactTimes(HashSet<String> exactTimes) {
+		this.exactTimes = exactTimes;
 	}
 
 	public void run() {
@@ -58,7 +66,6 @@ public class ClientHandler implements Runnable {
 	private void sendEveryone(String message, String exactTime) {
 
 		Iterator<PrintWriter> it = clients.iterator();
-		// server needs to send to its server
 		while (it.hasNext()) {
 			try {
 

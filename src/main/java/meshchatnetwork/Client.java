@@ -68,7 +68,8 @@ public class Client {
 		}
 	}
 
-	public void sendMessage(String message, String exactTime) {
+	public void sendMessage(String message, String exactTime, HashSet<String>exclusiveTimeIP) {
+		exclusiveLines = exclusiveTimeIP;
 		try {
 			output.write(exactTime);
 			output.println();
@@ -78,6 +79,14 @@ public class Client {
 			System.out.println("couldn't send");
 			e.printStackTrace();
 		}
+	}
+
+	public HashSet<String> getExclusiveLines() {
+		return exclusiveLines;
+	}
+
+	public void setExclusiveLines(HashSet<String> exclusiveLines) {
+		this.exclusiveLines = exclusiveLines;
 	}
 
 	public Socket getClient() {
@@ -106,7 +115,7 @@ public class Client {
 						conversation.append(incoming + "\n");
 						}
 						else{
-							input.readLine();
+							//input.readLine();
 						}
 					}
 				} catch (Exception e) {

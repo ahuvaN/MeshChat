@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -40,6 +41,8 @@ public class MeshChatGUI extends JFrame {
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
+	
+	private HashSet<String>exclusiveTimeIP;
 
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -56,7 +59,7 @@ public class MeshChatGUI extends JFrame {
 		port = portNum;
 
 		server = new Server(myName, port);
-
+		exclusiveTimeIP = new HashSet<String>();
 		setFeatures();
 		setButtons();
 
@@ -197,9 +200,11 @@ public class MeshChatGUI extends JFrame {
 
 				String outgoing = myName + ": " + text.getText();
 				String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
-				client.sendMessage(outgoing, exactTimeIPAddress);
+				client.sendMessage(outgoing, exactTimeIPAddress, exclusiveTimeIP);
+				exclusiveTimeIP = client.getExclusiveLines();
 				text.setText("");
 				text.requestFocus();
+				exclusiveTimeIP = server.getExclusiveLines();
 			}
 		});
 

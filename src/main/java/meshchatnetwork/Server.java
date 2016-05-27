@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JTextArea;
@@ -24,11 +25,13 @@ public class Server {
 	private JTextArea conversation = null;
 	private int port;
 	private Client clientForServer;
+	private HashSet<String> exclusiveLines;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
 		port = prt;
 		clients = new ArrayList<PrintWriter>();
+		exclusiveLines = new HashSet<String>();
 
 	}
 
@@ -60,9 +63,8 @@ public class Server {
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
 								clients.add(writer);
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
+								Thread t = new Thread(new ClientHandler(socket, conversation, clients, exclusiveLines));
 								t.start();
-								
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -105,6 +107,10 @@ public class Server {
 	public void setClientForServer(Client clientForServer) {
 		this.clientForServer = clientForServer;
 		clients.add(clientForServer.getOutput());
+		exclusiveLines = clientForServer.getExclusiveLines();
 
+	}
+	public HashSet<String> getExclusiveLines(){
+		return this.exclusiveLines;
 	}
 }
