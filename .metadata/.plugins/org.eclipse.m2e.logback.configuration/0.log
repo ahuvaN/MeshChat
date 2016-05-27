@@ -1,0 +1,16 @@
+2016-05-26 20:09:01,544 [Worker-0] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: MeshChat:MeshChat:0.0.1-SNAPSHOT @ C:\Users\student1\Documents\workspace1\MeshChat\pom.xml.
+2016-05-26 20:09:01,951 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /MeshChat/src/main/java
+2016-05-26 20:09:01,953 [Worker-0] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /MeshChat/src/test/java
+2016-05-26 20:09:02,311 [Worker-0] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Imported and configured 1 project(s) in 3 sec
+2016-05-26 20:09:03,030 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 20:09:03,031 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\main\resources
+2016-05-26 20:09:03,032 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 20:09:03,032 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\test\resources
+2016-05-26 20:09:16,052 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 20:09:16,052 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\main\resources
+2016-05-26 20:09:16,053 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 20:09:16,053 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\test\resources
+2016-05-26 22:01:20,070 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 22:01:20,070 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\main\resources
+2016-05-26 22:01:20,072 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2016-05-26 22:01:20,072 [Worker-52] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\student1\Documents\workspace1\MeshChat\src\test\resources
