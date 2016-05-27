@@ -16,16 +16,18 @@ public class ClientHandler implements Runnable {
 	private JTextArea conversation;
 	private BufferedReader reader;
 	private HashSet<String> exactTimes = new HashSet<String>();
+	private PrintWriter above;
 
 	private List<PrintWriter> clients;
 
-	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients) {
+	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients, PrintWriter above) {
 		try {
 
 			this.clients = clients;
 			conversation = convo;
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
+			this.above = above;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,7 +56,14 @@ public class ClientHandler implements Runnable {
 
 	private void sendEveryone(String message) {
 		Iterator<PrintWriter> it = clients.iterator();
-
+		//server needs to send to its server
+		if(above !=null){
+			above.write(message);
+			above.flush();
+		}
+		else{
+			
+		}
 		while (it.hasNext()) {
 			try {
 
