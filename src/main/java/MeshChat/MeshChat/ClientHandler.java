@@ -15,6 +15,7 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
+	private PrintWriter output;
 	private HashSet<String> exactTimes = new HashSet<String>();
 	private PrintWriter above;
 
@@ -28,6 +29,9 @@ public class ClientHandler implements Runnable {
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
 			this.above = above;
+
+			output = new PrintWriter(clientsocket.getOutputStream());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,6 +59,9 @@ public class ClientHandler implements Runnable {
 	}
 
 	private void sendEveryone(String message) {
+		
+		output.println(message); //should connect to server
+		output.flush(); 
 		Iterator<PrintWriter> it = clients.iterator();
 		//server needs to send to its server
 		if(above !=null){
