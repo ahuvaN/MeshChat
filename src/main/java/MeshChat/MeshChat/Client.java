@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 public class Client {
@@ -29,11 +30,16 @@ public class Client {
 	 * @return int- if successfully converted throws exception if not
 	 */
 	private int isValidPort(String prt) throws Exception {
-		if (prt.length() == 4)
+		if (prt.length() >= 2 && prt.length() <= 5)
 			try {
 				return Integer.parseInt(prt);
 			} catch (Exception e) {
+
 			}
+		else {
+			JOptionPane.showMessageDialog(null, "You did not enter a valid port number. Please try again.");
+
+		}
 		throw new Exception();
 	}
 
@@ -52,6 +58,7 @@ public class Client {
 			output = new PrintWriter(client.getOutputStream());
 			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
 			socketList.add(client);
+
 			return true;
 			// TODO create InvalidIPException and InvalidPortException
 		} catch (IOException e) {
@@ -62,23 +69,21 @@ public class Client {
 			return false;
 		}
 	}
-	
-
 
 	public void sendMessage(String message, String exactTime) {
 		Iterator<Socket> it = socketList.iterator();
 		while (it.hasNext()) {
 			try {
-				
-			PrintWriter writer = new PrintWriter(it.next().getOutputStream());
-			writer.write(exactTime);
-			writer.println();
-			writer.println(message);
-			writer.flush();
-		} catch (Exception e) {
-			System.out.println("couldn't send");
-			e.printStackTrace();
-		}
+
+				PrintWriter writer = new PrintWriter(it.next().getOutputStream());
+				writer.write(exactTime);
+				writer.println();
+				writer.println(message);
+				writer.flush();
+			} catch (Exception e) {
+				System.out.println("couldn't send");
+				e.printStackTrace();
+			}
 		}
 	}
 
