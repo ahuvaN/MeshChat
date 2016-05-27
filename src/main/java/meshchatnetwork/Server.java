@@ -11,7 +11,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 import javax.swing.JTextArea;
 
 public class Server {
@@ -67,12 +66,11 @@ public class Server {
 								t.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
-								e.printStackTrace();
 							}
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
-					}
+						
+						}
 				}
 			}).start();
 		}
