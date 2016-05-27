@@ -23,6 +23,7 @@ public class Server {
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
+	private PrintWriter above;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
@@ -60,7 +61,7 @@ public class Server {
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
 								clients.add(writer);
 
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
+								Thread t = new Thread(new ClientHandler(socket, conversation, clients, above));
 								t.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
@@ -99,6 +100,10 @@ public class Server {
 
 	public void sendTextArea(JTextArea convo) {
 		conversation = convo;
+	}
+	
+	public void setAboveOutputStream(PrintWriter print){
+		above = print;
 	}
 }
 // option 2
