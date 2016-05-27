@@ -41,8 +41,8 @@ public class MeshChatGUI extends JFrame {
 	private BorderLayout layout;
 	private String myName; // for sent messages
 	private int port;
-	
-	private HashSet<String>exclusiveTimeIP;
+
+	private HashSet<String> exclusiveTimeIP;
 
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");

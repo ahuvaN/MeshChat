@@ -32,7 +32,6 @@ public class ClientHandler implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public HashSet<String> getExactTimes() {

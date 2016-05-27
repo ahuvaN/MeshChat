@@ -68,7 +68,7 @@ public class Client {
 		}
 	}
 
-	public void sendMessage(String message, String exactTime, HashSet<String>exclusiveTimeIP) {
+	public void sendMessage(String message, String exactTime, HashSet<String> exclusiveTimeIP) {
 		exclusiveLines = exclusiveTimeIP;
 		try {
 			output.write(exactTime);
@@ -101,7 +101,6 @@ public class Client {
 		return input;
 	}
 
-
 	public void listenerForMessages() {
 		Thread readerThread = new Thread(new Runnable() {
 
@@ -111,20 +110,15 @@ public class Client {
 				try {
 					while ((exactTime = input.readLine()) != null) {
 						incoming = input.readLine();
-						if (exclusiveLines.add(exactTime)){
-						conversation.append(incoming + "\n");
-						}
-						else{
-							//input.readLine();
-						}
+						if (exclusiveLines.add(exactTime)) {
+							conversation.append(incoming + "\n");
+						} 
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-
-		// the client is now listening for incoming messages
 		readerThread.start();
 	}
 }

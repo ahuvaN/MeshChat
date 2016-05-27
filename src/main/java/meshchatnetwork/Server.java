@@ -73,7 +73,6 @@ public class Server {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 				}
 			}).start();
 		}
@@ -110,7 +109,8 @@ public class Server {
 		exclusiveLines = clientForServer.getExclusiveLines();
 
 	}
-	public HashSet<String> getExclusiveLines(){
+
+	public HashSet<String> getExclusiveLines() {
 		return this.exclusiveLines;
 	}
 }

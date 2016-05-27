@@ -15,9 +15,6 @@ import javax.swing.JTextField;
 
 public class ServerStart extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JLabel nameLabel, portLabel;
 	private JTextField name, port;
@@ -61,7 +58,6 @@ public class ServerStart extends JFrame {
 	private void addActionListener(final ServerStart me) {
 		start.addActionListener(new ActionListener() {
 
-			
 			public void actionPerformed(ActionEvent arg0) {
 				String serverName = name.getText();
 				int serverPort = 0;
@@ -71,7 +67,7 @@ public class ServerStart extends JFrame {
 					MeshChatGUI g = new MeshChatGUI(serverName, serverPort);
 					g.setVisible(true);
 					g.startRunning();
-					
+
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Invalid port number");
 					port.setText("");
@@ -81,7 +77,7 @@ public class ServerStart extends JFrame {
 		});
 
 		port.addKeyListener(new KeyListener() {
-			
+
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -89,11 +85,11 @@ public class ServerStart extends JFrame {
 				}
 			}
 
-			
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+			}
 
-			
-			public void keyTyped(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {
+			}
 		});
 	}
 
