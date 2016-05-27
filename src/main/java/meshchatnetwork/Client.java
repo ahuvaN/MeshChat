@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
@@ -16,12 +17,12 @@ public class Client {
 	private PrintWriter output;
 	private BufferedReader input;
 	private Socket client;
-	private ArrayList<Socket> socketList;
 	private JTextArea conversation;
+	private HashSet<String> exclusiveLines;
 
 	public Client(JTextArea chat) throws Exception {
 		conversation = chat;
-		socketList = new ArrayList<Socket>();
+		exclusiveLines = new HashSet<String>();
 	}
 
 	/**
@@ -57,10 +58,7 @@ public class Client {
 			input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			output = new PrintWriter(client.getOutputStream());
 			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
-			socketList.add(client);
-
 			return true;
-			// TODO create InvalidIPException and InvalidPortException
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -71,20 +69,19 @@ public class Client {
 	}
 
 	public void sendMessage(String message, String exactTime) {
-		Iterator<Socket> it = socketList.iterator();
-		while (it.hasNext()) {
-			try {
-
-				PrintWriter writer = new PrintWriter(it.next().getOutputStream());
-				writer.write(exactTime);
-				writer.println();
-				writer.println(message);
-				writer.flush();
-			} catch (Exception e) {
-				System.out.println("couldn't send");
-				e.printStackTrace();
-			}
+		try {
+			output.write(exactTime);
+			output.println();
+			output.println(message);
+			output.flush();
+		} catch (Exception e) {
+			System.out.println("couldn't send");
+			e.printStackTrace();
 		}
+	}
+
+	public Socket getClient() {
+		return client;
 	}
 
 	public PrintWriter getOutput() {
@@ -95,21 +92,22 @@ public class Client {
 		return input;
 	}
 
-	public ArrayList<Socket> getSocketList() {
-		return socketList;
-	}
 
 	public void listenerForMessages() {
 		Thread readerThread = new Thread(new Runnable() {
 
 			public void run() {
+				String exactTime;
 				String incoming;
 				try {
-					while ((incoming = input.readLine()) != null) {
-						conversation.append(incoming + "/n");
-						// TODO send it out from server side,
-						// check if there are clients down the chain who didnt
-						// receive message yet
+					while ((exactTime = input.readLine()) != null) {
+						incoming = input.readLine();
+						if (exclusiveLines.add(exactTime)){
+						conversation.append(incoming + "\n");
+						}
+						else{
+							input.readLine();
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

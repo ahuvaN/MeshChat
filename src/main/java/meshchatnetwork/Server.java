@@ -23,7 +23,7 @@ public class Server {
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
-	private PrintWriter above;
+	private Client clientForServer;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
@@ -60,9 +60,9 @@ public class Server {
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
 								clients.add(writer);
-
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients, above));
+								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
 								t.start();
+								
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -101,22 +101,10 @@ public class Server {
 	public void sendTextArea(JTextArea convo) {
 		conversation = convo;
 	}
-	
-	public void setAboveOutputStream(PrintWriter print){
-		above = print;
+
+	public void setClientForServer(Client clientForServer) {
+		this.clientForServer = clientForServer;
+		clients.add(clientForServer.getOutput());
+
 	}
 }
-// option 2
-/*
- * if (conversation != null) { SwingUtilities.invokeLater(new Runnable() {
- * public void run() {
- * 
- * while (true) { try { Socket clientSocket = server.accept(); int i = 0; for (i
- * = 0; i < maxClientsCount; i++) { if (threads[i] == null) { (threads[i] = new
- * ClientThread( conversation, clientSocket, threads)).start(); break; } } if (i
- * == maxClientsCount) { ObjectOutputStream os = new ObjectOutputStream(
- * clientSocket.getOutputStream()); os.writeObject("Server too busy. Try later."
- * ); os.close(); clientSocket.close(); } } catch (IOException e) {
- * System.out.println(e); } finally { // closeUp(); // close all Streams } } }
- * }); }
- */

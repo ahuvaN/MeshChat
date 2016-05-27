@@ -17,19 +17,16 @@ public class ClientHandler implements Runnable {
 	private BufferedReader reader;
 	private PrintWriter output;
 	private HashSet<String> exactTimes = new HashSet<String>();
-	private PrintWriter above;
 
 	private List<PrintWriter> clients;
 
-	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients, PrintWriter above) {
+	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients) {
 		try {
 
 			this.clients = clients;
 			conversation = convo;
 			clientsocket = socket;
 			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
-			this.above = above;
-
 			output = new PrintWriter(clientsocket.getOutputStream());
 
 		} catch (Exception e) {
@@ -39,15 +36,15 @@ public class ClientHandler implements Runnable {
 	}
 
 	public void run() {
+		String exactTime;
 		String message;
-		System.out.println("run");
 
 		try {
-			while ((message = reader.readLine()) != null) {
-				if (exactTimes.add(message)) {
+			while ((exactTime = reader.readLine()) != null) {
+				if (exactTimes.add(exactTime)) {
 					message = reader.readLine();
 					conversation.append(message + "\n");
-					sendEveryone(message);
+					sendEveryone(message, exactTime);
 				} else {
 					reader.readLine();
 				}
@@ -58,23 +55,16 @@ public class ClientHandler implements Runnable {
 
 	}
 
-	private void sendEveryone(String message) {
-		
-		output.println(message); //should connect to server
-		output.flush(); 
+	private void sendEveryone(String message, String exactTime) {
+
 		Iterator<PrintWriter> it = clients.iterator();
-		//server needs to send to its server
-		if(above !=null){
-			above.write(message);
-			above.flush();
-		}
-		else{
-			
-		}
+		// server needs to send to its server
 		while (it.hasNext()) {
 			try {
 
 				PrintWriter writer = (PrintWriter) it.next();
+				writer.write(exactTime);
+				writer.println();
 				writer.println(message);
 				writer.flush();
 
