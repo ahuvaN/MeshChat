@@ -146,6 +146,9 @@ public class MeshChatGUI extends JFrame {
 									serverPort.getText())) {
 								notifyMsg.setText("Connected");
 								client.listenerForMessages();
+								serverIP.setEnabled(false);
+								serverPort.setEnabled(false);
+								connect.setEnabled(false);
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}
