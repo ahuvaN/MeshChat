@@ -1,6 +1,7 @@
 package meshchatnetwork;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.regex.Pattern;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -69,16 +71,26 @@ public class MeshChatGUI extends JFrame {
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
+		conversation.setBackground(Color.cyan);
 		notifyMsg = new JLabel("");
 		serverIP = new JTextField(10);
 		serverPort = new JTextField(4);
 		connect = new JButton("Connect"); // client to connect to a server
+		connect.setBackground(Color.green);
 		send = new JButton("Send"); // server sending out to all clients in its
-									// branches
+		// branches
+		send.setBackground(Color.GREEN);
 		text = new JTextArea();
+		text.setBackground(Color.CYAN);
 		save = new JButton("Save Chat");
+		save.setBackground(Color.GREEN);
 		conversation.setBounds(0, 0, 500, 700);
 
+		addComponents();
+
+	}
+
+	private void addComponents() {
 		JScrollPane scrollPane1 = new JScrollPane(conversation,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -118,12 +130,12 @@ public class MeshChatGUI extends JFrame {
 		add(top, BorderLayout.PAGE_START);
 		add(center, BorderLayout.CENTER);
 		add(bottom, BorderLayout.PAGE_END);
-
 	}
 
 	private void setButtons() {
 		connect.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				notifyMsg.setText(""); // clears error message
 
@@ -151,8 +163,8 @@ public class MeshChatGUI extends JFrame {
 							}
 						} else {
 							JOptionPane
-									.showMessageDialog(null,
-											"You did not enter a valid IP Address. Please try again.");
+							.showMessageDialog(null,
+									"You did not enter a valid IP Address. Please try again.");
 							serverIP.setText("");
 						}
 					} catch (Exception e) {
@@ -163,6 +175,7 @@ public class MeshChatGUI extends JFrame {
 
 		serverPort.addKeyListener(new KeyListener() {
 
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverIP == null, give it focus
@@ -171,15 +184,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
+			@Override
 			public void keyReleased(KeyEvent e) {
 			}
 
+			@Override
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		serverIP.addKeyListener(new KeyListener() {
 
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverPort == null, give it focus
@@ -188,15 +204,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
+			@Override
 			public void keyReleased(KeyEvent e) {
 			}
 
+			@Override
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		send.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				String outgoing = myName + ": " + text.getText();
@@ -211,15 +230,16 @@ public class MeshChatGUI extends JFrame {
 					exclusiveTimeIP = server.getExclusiveLines();
 				} catch (Exception ex) {
 					JOptionPane
-							.showMessageDialog(null,
-									"You must form a connection in order to send messages.");
-						text.setText("");
+					.showMessageDialog(null,
+							"You must form a connection in order to send messages.");
+					text.setText("");
 				}
 			}
 		});
 
 		text.addKeyListener(new KeyListener() {
 
+			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -227,15 +247,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
+			@Override
 			public void keyReleased(KeyEvent e) {
 			}
 
+			@Override
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		save.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					JFileChooser filesave = new JFileChooser();
@@ -264,6 +287,5 @@ public class MeshChatGUI extends JFrame {
 	public boolean validateIP(String ipAddress) {
 		return PATTERN.matcher(ipAddress).matches();
 	}
-	
-	
+
 }
