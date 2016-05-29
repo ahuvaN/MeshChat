@@ -63,11 +63,11 @@ public class ClientHandler implements Runnable {
 
 	private void sendEveryone(String message, String exactTime) {
 
-		Iterator<PrintWriter> it = clients.iterator();
-		while (it.hasNext()) {
+		Iterator<PrintWriter> iter = clients.iterator();
+		while (iter.hasNext()) {
 			try {
 
-				PrintWriter writer = (PrintWriter) it.next();
+				PrintWriter writer = (PrintWriter) iter.next();
 				writer.write(exactTime);
 				writer.println();
 				writer.println(message);
