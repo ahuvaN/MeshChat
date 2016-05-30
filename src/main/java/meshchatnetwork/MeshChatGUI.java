@@ -58,6 +58,7 @@ public class MeshChatGUI extends JFrame {
 		exclusiveTimeIP = new HashSet<String>();
 		setFeatures();
 		setButtons();
+		addComponents();
 
 		server.sendTextArea(conversation);
 	}
@@ -85,8 +86,6 @@ public class MeshChatGUI extends JFrame {
 		save = new JButton("Save Chat");
 		save.setBackground(Color.GREEN);
 		conversation.setBounds(0, 0, 500, 700);
-
-		addComponents();
 
 	}
 
@@ -162,9 +161,8 @@ public class MeshChatGUI extends JFrame {
 								notifyMsg.setText("Unable to Connect");
 							}
 						} else {
-							JOptionPane
-							.showMessageDialog(null,
-									"You did not enter a valid IP Address. Please try again.");
+							JOptionPane.showMessageDialog(null,
+									"Invalid IP Address. Please try again.");
 							serverIP.setText("");
 						}
 					} catch (Exception e) {
@@ -230,8 +228,8 @@ public class MeshChatGUI extends JFrame {
 					exclusiveTimeIP = server.getExclusiveLines();
 				} catch (Exception ex) {
 					JOptionPane
-					.showMessageDialog(null,
-							"You must form a connection in order to send messages.");
+							.showMessageDialog(null,
+									"You must form a connection in order to send messages.");
 					text.setText("");
 				}
 			}

@@ -20,13 +20,15 @@ public class ClientHandler implements Runnable {
 
 	private List<PrintWriter> clients;
 
-	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> clients, HashSet<String> exactTimes) {
+	public ClientHandler(Socket socket, JTextArea convo,
+			List<PrintWriter> clients, HashSet<String> exactTimes) {
 		try {
 
 			this.clients = clients;
 			conversation = convo;
 			clientsocket = socket;
-			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(
+					clientsocket.getInputStream()));
 			output = new PrintWriter(clientsocket.getOutputStream());
 			this.exactTimes = exactTimes;
 		} catch (Exception e) {
@@ -42,6 +44,7 @@ public class ClientHandler implements Runnable {
 		this.exactTimes = exactTimes;
 	}
 
+	@Override
 	public void run() {
 		String exactTime;
 		String message;
@@ -67,7 +70,7 @@ public class ClientHandler implements Runnable {
 		while (iter.hasNext()) {
 			try {
 
-				PrintWriter writer = (PrintWriter) iter.next();
+				PrintWriter writer = iter.next();
 				writer.write(exactTime);
 				writer.println();
 				writer.println(message);
