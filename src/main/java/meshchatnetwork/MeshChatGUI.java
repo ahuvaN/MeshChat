@@ -32,6 +32,7 @@ public class MeshChatGUI extends JFrame {
 	private Client client, clientForServer;
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
+	private JPanel top, topCenter;
 	private JButton connect, send, save;
 	private JTextField serverIP, serverPort;
 	private BorderLayout layout;
@@ -72,19 +73,14 @@ public class MeshChatGUI extends JFrame {
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
-		conversation.setBackground(Color.cyan);
 		notifyMsg = new JLabel("");
 		serverIP = new JTextField(10);
 		serverPort = new JTextField(4);
 		connect = new JButton("Connect"); // client to connect to a server
-		connect.setBackground(Color.green);
 		send = new JButton("Send"); // server sending out to all clients in its
 		// branches
-		send.setBackground(Color.GREEN);
 		text = new JTextArea();
-		text.setBackground(Color.CYAN);
 		save = new JButton("Save Chat");
-		save.setBackground(Color.GREEN);
 		conversation.setBounds(0, 0, 500, 700);
 
 	}
@@ -101,8 +97,8 @@ public class MeshChatGUI extends JFrame {
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane2.setPreferredSize(new Dimension(450, 55));
 
-		JPanel top = new JPanel(new BorderLayout());
-		JPanel topCenter = new JPanel();
+		top = new JPanel(new BorderLayout());
+		topCenter = new JPanel();
 		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress()
 				+ "      Using port: " + port, SwingConstants.CENTER),
 				BorderLayout.NORTH);
@@ -157,6 +153,8 @@ public class MeshChatGUI extends JFrame {
 								clientForServer = client;
 								server.setClientForServer(clientForServer);
 								client.listenerForMessages();
+								connect.setEnabled(false);
+								top.remove(topCenter);
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}

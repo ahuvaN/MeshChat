@@ -38,15 +38,10 @@ public class ServerStart extends JFrame {
 		JPanel bottom = new JPanel();
 
 		nameLabel = new JLabel("Enter your name: ");
-		nameLabel.setBackground(Color.GREEN);
 		portLabel = new JLabel("Choose a port: ");
-		portLabel.setBackground(Color.GREEN);
 		name = new JTextField(20);
-		name.setBackground(Color.CYAN);
 		port = new JTextField(10);
-		port.setBackground(Color.CYAN);
 		start = new JButton("Start");
-		start.setBackground(Color.GREEN);
 
 		top.add(nameLabel);
 		top.add(name);
