@@ -28,8 +28,8 @@ import javax.swing.SwingConstants;
 public class MeshChatGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private Server server;
-	private Client client, clientForServer;
+	private Server serverMe, serverServer;
+	private Client clientMe, clientServer; //TODO is this extra??
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
 	private JPanel top, topCenter;
@@ -55,17 +55,17 @@ public class MeshChatGUI extends JFrame {
 		myName = name.toUpperCase();
 		port = portNum;
 
-		server = new Server(myName, port);
+		serverMe = new Server(myName, port);
 		exclusiveTimeIP = new HashSet<String>();
 		setFeatures();
 		setButtons();
 		addComponents();
 
-		server.sendTextArea(conversation);
+		serverMe.sendTextArea(conversation);
 	}
 
 	public void startRunning() {
-		server.startRunning();
+		serverMe.startRunning();
 	}
 
 	private void setFeatures() {
@@ -99,7 +99,7 @@ public class MeshChatGUI extends JFrame {
 
 		top = new JPanel(new BorderLayout());
 		topCenter = new JPanel();
-		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress()
+		top.add(new JLabel(myName + "'s IP Address: " + serverMe.getMyIpAddress()
 				+ "      Using port: " + port, SwingConstants.CENTER),
 				BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
@@ -144,15 +144,14 @@ public class MeshChatGUI extends JFrame {
 					// client
 
 					try {
-						client = new Client(conversation);
+						clientMe = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (client.connectToServer(serverIP.getText(),
+							if (clientMe.connectToServer(serverIP.getText(),
 									serverPort.getText())) {
 								notifyMsg.setText("Connected");
-								clientForServer = client;
-								server.setClientForServer(clientForServer);
-								client.listenerForMessages();
+								serverMe.setClientForServer(clientMe);
+								clientMe.listenerForMessages();
 								connect.setEnabled(false);
 								top.remove(topCenter);
 							} else {
@@ -214,16 +213,16 @@ public class MeshChatGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
-				String outgoing = myName + ": " + text.getText();
-				String exactTimeIPAddress = String.valueOf(System
-						.currentTimeMillis()) + serverIP.getText();
+				serverIP.getText();
+				Message msg = new Message(myName, String.valueOf(System
+						.currentTimeMillis()), text.getText());
 				try {
-					client.sendMessage(outgoing, exactTimeIPAddress,
+					clientMe.sendMessage(msg,
 							exclusiveTimeIP);
-					exclusiveTimeIP = client.getExclusiveLines();
+					exclusiveTimeIP = clientMe.getExclusiveLines();
 					text.setText("");
 					text.requestFocus();
-					exclusiveTimeIP = server.getExclusiveLines();
+					exclusiveTimeIP = serverMe.getExclusiveLines();
 				} catch (Exception ex) {
 					JOptionPane
 							.showMessageDialog(null,

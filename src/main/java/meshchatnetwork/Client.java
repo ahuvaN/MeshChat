@@ -67,13 +67,13 @@ public class Client {
 		}
 	}
 
-	public void sendMessage(String message, String exactTime,
+	public void sendMessage(Message msg,
 			HashSet<String> exclusiveTimeIP) {
 		exclusiveLines = exclusiveTimeIP;
 		try {
-			output.write(exactTime);
+			output.write(msg.getTimestamp());
 			output.println();
-			output.println(message);
+			output.println(msg.toString());
 			output.flush();
 		} catch (Exception e) {
 			System.out.println("couldn't send");
