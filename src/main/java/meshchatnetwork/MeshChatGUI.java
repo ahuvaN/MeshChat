@@ -1,6 +1,7 @@
 package meshchatnetwork;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,6 +48,7 @@ public class MeshChatGUI extends JFrame {
 		setLocationRelativeTo(null);
 		layout = new BorderLayout();
 		setLayout(layout);
+		setBackground(new Color(255, 255, 204));
 
 		myName = name.toUpperCase();
 		port = portNum;
@@ -65,6 +67,7 @@ public class MeshChatGUI extends JFrame {
 
 	private void setFeatures() {
 		conversation = new JTextArea();
+		conversation.setBackground(new Color(255, 255, 224));
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
@@ -128,6 +131,7 @@ public class MeshChatGUI extends JFrame {
 				// first check that serverIP and serverPort are not null
 				if (serverIP.getText().isEmpty() || serverPort.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Please enter a valid IP and valid port");
+					serverIP.requestFocus();
 				} else {
 					// when you request to connect to server, then you become a
 					// client
@@ -140,12 +144,15 @@ public class MeshChatGUI extends JFrame {
 								server.setClientForServer(client);
 								connect.setEnabled(false);
 								top.remove(topCenter);
+								text.requestFocus();
+								conversation.append("\n");
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Invalid IP Address. Please try again.");
 							serverIP.setText("");
+							serverIP.requestFocus();
 						}
 					} catch (Exception e) {
 					}
@@ -188,21 +195,23 @@ public class MeshChatGUI extends JFrame {
 		send.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
+				if (!text.getText().trim().equals("")) {
 
-				String outgoing = myName + ": " + text.getText();
-				String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
-				try {
-					if (client != null) {
-						client.sendMessage(outgoing, exactTimeIPAddress);
-					} else if (client == null) {
-						server.sendMessage(outgoing, exactTimeIPAddress);
+					String outgoing = myName + ": " + text.getText();
+					String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
+					try {
+						if (client != null) {
+							client.sendMessage(outgoing, exactTimeIPAddress);
+						} else if (client == null) {
+							server.sendMessage(outgoing, exactTimeIPAddress);
+						}
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
+						text.setText("");
 					}
-					text.setText("");
-					text.requestFocus();
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
-					text.setText("");
 				}
+				text.setText("");
+				text.requestFocus();
 			}
 		});
 

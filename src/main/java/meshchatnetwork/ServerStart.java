@@ -58,20 +58,23 @@ public class ServerStart extends JFrame {
 	private void addActionListener(final ServerStart me) {
 		start.addActionListener(new ActionListener() {
 
-			
 			public void actionPerformed(ActionEvent arg0) {
 				String serverName = name.getText();
-				int serverPort = 0;
-				try {
-					serverPort = Integer.parseInt(port.getText());
-					me.dispose();
-					MeshChatGUI g = new MeshChatGUI(serverName, serverPort);
-					g.setVisible(true);
-					g.startRunning();
+				if (serverName.length() > 15) {
+					JOptionPane.showMessageDialog(null, "Name can't exceed 15 characters");
+				} else {
+					int serverPort = 0;
+					try {
+						serverPort = Integer.parseInt(port.getText());
+						me.dispose();
+						MeshChatGUI g = new MeshChatGUI(serverName, serverPort);
+						g.setVisible(true);
+						g.startRunning();
 
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Invalid port number");
-					port.setText("");
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Invalid port number");
+						port.setText("");
+					}
 				}
 
 			}
@@ -79,7 +82,6 @@ public class ServerStart extends JFrame {
 
 		port.addKeyListener(new KeyListener() {
 
-			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -87,11 +89,9 @@ public class ServerStart extends JFrame {
 				}
 			}
 
-			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
