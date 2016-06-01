@@ -14,7 +14,13 @@ public class Client {
 	private BufferedReader input;
 	private Socket client;
 	private JTextArea conversation;
+
+	private Server serverHalf;
 	
+
+	public void setServerHalf(Server serverHalf) {
+		this.serverHalf = serverHalf;
+	}
 
 	public Client(JTextArea chat) throws Exception {
 		conversation = chat;
@@ -99,7 +105,16 @@ public class Client {
 					while ((exactTime = input.readLine()) != null) {
 						incoming = input.readLine();
 						if (Server.exclusiveTimeIP.add(exactTime)) {
+
+							/*only adding onto convo if sent the 
+							 * original message clients of original
+							 * messager dont get to this point */	
 							conversation.append(incoming + "\n");
+							//need to send to e/o here calling server side of self...
+							System.out.println("before");
+							serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
+							System.out.println("after");
+
 						}
 					}
 				} catch (Exception e) {

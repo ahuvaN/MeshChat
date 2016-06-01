@@ -51,12 +51,12 @@ public class ClientHandler implements Runnable {
 
 	}
 
-	private void sendEveryone(String message, String exactTime) {
+	public void sendEveryone(String message, String exactTime) {
 
 		Iterator<PrintWriter> iter = clients.iterator();
 		while (iter.hasNext()) {
 			try {
-
+				
 				PrintWriter writer = iter.next();
 				writer.write(exactTime);
 				writer.println();
