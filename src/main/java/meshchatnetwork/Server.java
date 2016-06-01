@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JTextArea;
 
@@ -63,18 +64,9 @@ public class Server {
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
-								clients.clear();
-								clients.add(writer);
-								for (PrintWriter client : clients){
-									System.out.println(client);
-								}
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
-								t.start();
-								//clients.clear();
 								clients.add(writer);
 								clientHandler = new ClientHandler(socket, conversation, clients);
 								thread = new Thread(clientHandler);
-								//Thread t = new Thread(new ClientHandler(socket,conversation, clients));
 								thread.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
@@ -126,4 +118,10 @@ public class Server {
 		clients.add(clientForServer.getOutput());
 		clientForServer.setServerHalf(this);
 	}
+
+	public void sendMessage(String outgoing, String exactTimeIPAddress) {
+		clientHandler.sendEveryone(outgoing, exactTimeIPAddress);
+		}
+		
+	
 }

@@ -16,7 +16,6 @@ public class Client {
 	private JTextArea conversation;
 
 	private Server serverHalf;
-	
 
 	public void setServerHalf(Server serverHalf) {
 		this.serverHalf = serverHalf;
@@ -39,8 +38,7 @@ public class Client {
 
 			}
 		} else {
-			JOptionPane.showMessageDialog(null,
-					"Invalid port number. Please try again.");
+			JOptionPane.showMessageDialog(null, "Invalid port number. Please try again.");
 
 		}
 		throw new Exception();
@@ -57,11 +55,32 @@ public class Client {
 		try {
 			int port = isValidPort(prt);
 			client = new Socket(IP, port);
-			input = new BufferedReader(new InputStreamReader(
-					client.getInputStream()));
+			input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			output = new PrintWriter(client.getOutputStream());
-			conversation.append("\n\t      Successfully connected to server "
-					+ IP + "\n");
+			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
+			new Thread(new Runnable() {
+
+				public void run() {
+					String exactTime;
+					String incoming;
+					while (true) {
+						try {
+							while ((exactTime = input.readLine()) != null) {
+								incoming = input.readLine();
+								if (Server.exclusiveTimeIP.add(exactTime)) {
+									conversation.append(incoming + "\n");
+									// need to send to e/o here calling server
+									// side of self...
+									System.out.println("before");
+									serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
+									System.out.println("after");
+								}
+							}
+						} catch (Exception e) {
+						}
+					}
+				}
+			}).start();
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -97,7 +116,6 @@ public class Client {
 	public void listenerForMessages() {
 		Thread readerThread = new Thread(new Runnable() {
 
-			
 			public void run() {
 				String exactTime;
 				String incoming;
@@ -105,16 +123,12 @@ public class Client {
 					while ((exactTime = input.readLine()) != null) {
 						incoming = input.readLine();
 						if (Server.exclusiveTimeIP.add(exactTime)) {
-
-							/*only adding onto convo if sent the 
-							 * original message clients of original
-							 * messager dont get to this point */	
 							conversation.append(incoming + "\n");
-							//need to send to e/o here calling server side of self...
+							// need to send to e/o here calling server side of
+							// self...
 							System.out.println("before");
 							serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
 							System.out.println("after");
-
 						}
 					}
 				} catch (Exception e) {
