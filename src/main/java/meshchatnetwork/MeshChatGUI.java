@@ -3,6 +3,7 @@ package meshchatnetwork;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -67,27 +68,34 @@ public class MeshChatGUI extends JFrame {
 
 	private void setFeatures() {
 		conversation = new JTextArea();
-		conversation.setBackground(new Color(255, 255, 224));
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
+		conversation.setMargin( new Insets(0,10,0,10));
+				
 		notifyMsg = new JLabel("");
 		serverIP = new JTextField(10);
 		serverPort = new JTextField(4);
 		connect = new JButton("Connect"); // client to connect to a server
 		send = new JButton("Send"); // server sending out to all clients in its
 		// branches
+		
 		text = new JTextArea();
+		text.setLineWrap(true);
+		text.setWrapStyleWord(true);
+		text.setMargin(new Insets(5, 5, 0, 5));
+		
 		save = new JButton("Save Chat");
-		conversation.setBounds(0, 0, 500, 700);
-
+		//conversation.setBounds(0, 0, 500, 500);
+		
+		
 	}
 
 	private void addComponents() {
 		JScrollPane scrollPane1 = new JScrollPane(conversation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane1.setPreferredSize(new Dimension(525, 725));
-		scrollPane1.setBounds(0, 0, 500, 500);
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane1.setPreferredSize(new Dimension(525, 570));
+		//scrollPane1.setBounds(0,0, 500, 500);
 
 		JScrollPane scrollPane2 = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

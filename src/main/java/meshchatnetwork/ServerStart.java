@@ -61,7 +61,7 @@ public class ServerStart extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				String serverName = name.getText();
 				if (serverName.length() > 15) {
-					JOptionPane.showMessageDialog(null, "Name can't exceed 15 characters");
+					JOptionPane.showMessageDialog(null, "Name must be shorter");
 				} else {
 					int serverPort = 0;
 					try {
