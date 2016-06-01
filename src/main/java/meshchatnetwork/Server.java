@@ -61,7 +61,11 @@ public class Server {
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
+								clients.clear();
 								clients.add(writer);
+								for (PrintWriter client : clients){
+									System.out.println(client);
+								}
 								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
 								t.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
