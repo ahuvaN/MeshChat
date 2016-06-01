@@ -24,13 +24,13 @@ public class Server {
 	private JTextArea conversation = null;
 	private int port;
 	private Client clientForServer;
-	private HashSet<String> exclusiveLines;
+	public static HashSet<String> exclusiveTimeIP;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
 		port = prt;
 		clients = new ArrayList<PrintWriter>();
-		exclusiveLines = new HashSet<String>();
+		exclusiveTimeIP = new HashSet<String>();
 
 	}
 
@@ -61,8 +61,12 @@ public class Server {
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
+								clients.clear();
 								clients.add(writer);
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients, exclusiveLines));
+								for (PrintWriter client : clients){
+									System.out.println(client);
+								}
+								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
 								t.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
@@ -104,11 +108,5 @@ public class Server {
 	public void setClientForServer(Client clientForServer) {
 		this.clientForServer = clientForServer;
 		clients.add(clientForServer.getOutput());
-		exclusiveLines = clientForServer.getExclusiveLines();
-
-	}
-
-	public HashSet<String> getExclusiveLines() {
-		return this.exclusiveLines;
 	}
 }

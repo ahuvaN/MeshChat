@@ -1,7 +1,6 @@
 package meshchatnetwork;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
-import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -39,7 +37,6 @@ public class MeshChatGUI extends JFrame {
 	private String myName; // for sent messages
 	private int port;
 
-	private HashSet<String> exclusiveTimeIP;
 
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -56,7 +53,6 @@ public class MeshChatGUI extends JFrame {
 		port = portNum;
 
 		server = new Server(myName, port);
-		exclusiveTimeIP = new HashSet<String>();
 		setFeatures();
 		setButtons();
 		addComponents();
@@ -130,7 +126,7 @@ public class MeshChatGUI extends JFrame {
 	private void setButtons() {
 		connect.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 				notifyMsg.setText(""); // clears error message
 
@@ -171,7 +167,7 @@ public class MeshChatGUI extends JFrame {
 
 		serverPort.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverIP == null, give it focus
@@ -180,18 +176,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		serverIP.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverPort == null, give it focus
@@ -200,30 +196,27 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		send.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 
 				String outgoing = myName + ": " + text.getText();
 				String exactTimeIPAddress = String.valueOf(System
 						.currentTimeMillis()) + serverIP.getText();
 				try {
-					client.sendMessage(outgoing, exactTimeIPAddress,
-							exclusiveTimeIP);
-					exclusiveTimeIP = client.getExclusiveLines();
+					client.sendMessage(outgoing, exactTimeIPAddress);
 					text.setText("");
 					text.requestFocus();
-					exclusiveTimeIP = server.getExclusiveLines();
 				} catch (Exception ex) {
 					JOptionPane
 							.showMessageDialog(null,
@@ -235,7 +228,7 @@ public class MeshChatGUI extends JFrame {
 
 		text.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -243,18 +236,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		save.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent e) {
 				try {
 					JFileChooser filesave = new JFileChooser();
