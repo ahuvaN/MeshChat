@@ -153,6 +153,7 @@ public class MeshChatGUI extends JFrame {
 								client.listenerForMessages();
 								connect.setEnabled(false);
 								top.remove(topCenter);
+								System.out.println(server);
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}

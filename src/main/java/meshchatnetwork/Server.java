@@ -25,6 +25,8 @@ public class Server {
 	private int port;
 	private Client clientForServer;
 	public static HashSet<String> exclusiveTimeIP;
+	private Thread thread;
+	private ClientHandler clientHandler;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
@@ -61,13 +63,12 @@ public class Server {
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
-								clients.clear();
+								//clients.clear();
 								clients.add(writer);
-								for (PrintWriter client : clients){
-									System.out.println(client);
-								}
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
-								t.start();
+								clientHandler = new ClientHandler(socket, conversation, clients);
+								thread = new Thread(clientHandler);
+								//Thread t = new Thread(new ClientHandler(socket,conversation, clients));
+								thread.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
 							}
@@ -78,6 +79,14 @@ public class Server {
 				}
 			}).start();
 		}
+	}
+
+	public Thread getThread() {
+		return thread;
+	}
+
+	public ClientHandler getClientHandler() {
+		return clientHandler;
 	}
 
 	public String getMyIpAddress() {
@@ -108,5 +117,7 @@ public class Server {
 	public void setClientForServer(Client clientForServer) {
 		this.clientForServer = clientForServer;
 		clients.add(clientForServer.getOutput());
+		clientForServer.setServerHalf(this);
+		System.out.println(this);
 	}
 }
