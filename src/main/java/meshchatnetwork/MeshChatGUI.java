@@ -28,8 +28,8 @@ import javax.swing.SwingConstants;
 public class MeshChatGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private Server serverMe, serverServer;
-	private Client clientMe, clientServer; //TODO is this extra??
+	private Server server;
+	private Client client, clientForServer;
 	private JTextArea conversation, text;
 	private JLabel notifyMsg;
 	private JPanel top, topCenter;
@@ -39,7 +39,6 @@ public class MeshChatGUI extends JFrame {
 	private String myName; // for sent messages
 	private int port;
 
-	private HashSet<String> exclusiveTimeIP;
 
 	private final Pattern PATTERN = Pattern
 			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
@@ -55,17 +54,16 @@ public class MeshChatGUI extends JFrame {
 		myName = name.toUpperCase();
 		port = portNum;
 
-		serverMe = new Server(myName, port);
-		exclusiveTimeIP = new HashSet<String>();
+		server = new Server(myName, port);
 		setFeatures();
 		setButtons();
 		addComponents();
 
-		serverMe.sendTextArea(conversation);
+		server.sendTextArea(conversation);
 	}
 
 	public void startRunning() {
-		serverMe.startRunning();
+		server.startRunning();
 	}
 
 	private void setFeatures() {
@@ -99,7 +97,7 @@ public class MeshChatGUI extends JFrame {
 
 		top = new JPanel(new BorderLayout());
 		topCenter = new JPanel();
-		top.add(new JLabel(myName + "'s IP Address: " + serverMe.getMyIpAddress()
+		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress()
 				+ "      Using port: " + port, SwingConstants.CENTER),
 				BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
@@ -130,7 +128,7 @@ public class MeshChatGUI extends JFrame {
 	private void setButtons() {
 		connect.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 				notifyMsg.setText(""); // clears error message
 
@@ -144,14 +142,15 @@ public class MeshChatGUI extends JFrame {
 					// client
 
 					try {
-						clientMe = new Client(conversation);
+						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (clientMe.connectToServer(serverIP.getText(),
+							if (client.connectToServer(serverIP.getText(),
 									serverPort.getText())) {
 								notifyMsg.setText("Connected");
-								serverMe.setClientForServer(clientMe);
-								clientMe.listenerForMessages();
+								clientForServer = client;
+								server.setClientForServer(clientForServer);
+								client.listenerForMessages();
 								connect.setEnabled(false);
 								top.remove(topCenter);
 							} else {
@@ -170,7 +169,7 @@ public class MeshChatGUI extends JFrame {
 
 		serverPort.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverIP == null, give it focus
@@ -179,18 +178,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		serverIP.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// if serverPort == null, give it focus
@@ -199,30 +198,27 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		send.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent arg0) {
 
-				serverIP.getText();
-				Message msg = new Message(myName, String.valueOf(System
-						.currentTimeMillis()), text.getText());
+				String outgoing = myName + ": " + text.getText();
+				String exactTimeIPAddress = String.valueOf(System
+						.currentTimeMillis()) + serverIP.getText();
 				try {
-					clientMe.sendMessage(msg,
-							exclusiveTimeIP);
-					exclusiveTimeIP = clientMe.getExclusiveLines();
+					client.sendMessage(outgoing, exactTimeIPAddress);
 					text.setText("");
 					text.requestFocus();
-					exclusiveTimeIP = serverMe.getExclusiveLines();
 				} catch (Exception ex) {
 					JOptionPane
 							.showMessageDialog(null,
@@ -234,7 +230,7 @@ public class MeshChatGUI extends JFrame {
 
 		text.addKeyListener(new KeyListener() {
 
-			@Override
+			
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					e.consume();
@@ -242,18 +238,18 @@ public class MeshChatGUI extends JFrame {
 				}
 			}
 
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 			}
 
-			@Override
+			
 			public void keyTyped(KeyEvent e) {
 			}
 		});
 
 		save.addActionListener(new ActionListener() {
 
-			@Override
+			
 			public void actionPerformed(ActionEvent e) {
 				try {
 					JFileChooser filesave = new JFileChooser();

@@ -16,11 +16,10 @@ public class Client {
 	private BufferedReader input;
 	private Socket client;
 	private JTextArea conversation;
-	private HashSet<String> exclusiveLines;
+	
 
 	public Client(JTextArea chat) throws Exception {
 		conversation = chat;
-		exclusiveLines = new HashSet<String>();
 	}
 
 	/**
@@ -67,26 +66,16 @@ public class Client {
 		}
 	}
 
-	public void sendMessage(Message msg,
-			HashSet<String> exclusiveTimeIP) {
-		exclusiveLines = exclusiveTimeIP;
+	public void sendMessage(String message, String exactTime) {
 		try {
-			output.write(msg.getTimestamp());
+			output.write(exactTime);
 			output.println();
-			output.println(msg.toString());
+			output.println(message);
 			output.flush();
 		} catch (Exception e) {
 			System.out.println("couldn't send");
 			e.printStackTrace();
 		}
-	}
-
-	public HashSet<String> getExclusiveLines() {
-		return exclusiveLines;
-	}
-
-	public void setExclusiveLines(HashSet<String> exclusiveLines) {
-		this.exclusiveLines = exclusiveLines;
 	}
 
 	public Socket getClient() {
@@ -104,14 +93,14 @@ public class Client {
 	public void listenerForMessages() {
 		Thread readerThread = new Thread(new Runnable() {
 
-			@Override
+			
 			public void run() {
 				String exactTime;
 				String incoming;
 				try {
 					while ((exactTime = input.readLine()) != null) {
 						incoming = input.readLine();
-						if (exclusiveLines.add(exactTime)) {
+						if (Server.exclusiveTimeIP.add(exactTime)) {
 							conversation.append(incoming + "\n");
 						}
 					}
