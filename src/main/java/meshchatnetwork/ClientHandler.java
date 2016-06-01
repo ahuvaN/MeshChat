@@ -14,6 +14,7 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
+	@SuppressWarnings("unused")
 	private PrintWriter output;
 	private List<PrintWriter> clients;
 
@@ -64,7 +65,6 @@ public class ClientHandler implements Runnable {
 				writer.flush();
 
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}

@@ -131,14 +131,18 @@ public class MeshChatGUI extends JFrame {
 				} else {
 					// when you request to connect to server, then you become a
 					// client
-
 					try {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
 							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
 								notifyMsg.setText("Connected");
+<<<<<<< HEAD
 								server.setClientForServer(client);
+=======
+								clientForServer = client;
+								server.setClientForServer(clientForServer);
+>>>>>>> f63dbe063865706eea1bff90de904e8a73c9031b
 								connect.setEnabled(false);
 								top.remove(topCenter);
 							} else {
@@ -158,7 +162,6 @@ public class MeshChatGUI extends JFrame {
 
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					// if serverIP == null, give it focus
 					e.consume();
 					connect.doClick();
 				}
@@ -175,7 +178,6 @@ public class MeshChatGUI extends JFrame {
 
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					// if serverPort == null, give it focus
 					e.consume();
 					connect.doClick();
 				}
@@ -203,7 +205,7 @@ public class MeshChatGUI extends JFrame {
 					text.setText("");
 					text.requestFocus();
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "You must form a connection in order to send messages.");
+					JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
 					text.setText("");
 				}
 			}
@@ -243,7 +245,6 @@ public class MeshChatGUI extends JFrame {
 					bw.close();
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "The log was not saved successfully.");
-					ex.printStackTrace();
 				}
 			}
 		});
