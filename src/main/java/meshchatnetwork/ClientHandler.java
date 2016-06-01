@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,7 +15,6 @@ public class ClientHandler implements Runnable {
 	private JTextArea conversation;
 	private BufferedReader reader;
 	private PrintWriter output;
-
 	private List<PrintWriter> clients;
 
 	public ClientHandler(Socket socket, JTextArea convo,
@@ -53,12 +51,12 @@ public class ClientHandler implements Runnable {
 
 	}
 
-	private void sendEveryone(String message, String exactTime) {
+	public void sendEveryone(String message, String exactTime) {
 
 		Iterator<PrintWriter> iter = clients.iterator();
 		while (iter.hasNext()) {
 			try {
-
+				
 				PrintWriter writer = iter.next();
 				writer.write(exactTime);
 				writer.println();

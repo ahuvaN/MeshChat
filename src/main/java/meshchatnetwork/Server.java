@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JTextArea;
 
@@ -25,6 +26,8 @@ public class Server {
 	private int port;
 	private Client clientForServer;
 	public static HashSet<String> exclusiveTimeIP;
+	private Thread thread;
+	private ClientHandler clientHandler;
 
 	public Server(String name, int prt) {
 		myName = name.toUpperCase();
@@ -62,13 +65,10 @@ public class Server {
 								String clientAddress = socket.getInetAddress().getHostAddress();
 								
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
-								//clients.clear();
 								clients.add(writer);
-								for (PrintWriter client : clients){
-									System.out.println(client);
-								}
-								Thread t = new Thread(new ClientHandler(socket, conversation, clients));
-								t.start();
+								clientHandler = new ClientHandler(socket, conversation, clients);
+								thread = new Thread(clientHandler);
+								thread.start();
 								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
 							} catch (Exception e) {
 							}
@@ -79,6 +79,14 @@ public class Server {
 				}
 			}).start();
 		}
+	}
+
+	public Thread getThread() {
+		return thread;
+	}
+
+	public ClientHandler getClientHandler() {
+		return clientHandler;
 	}
 
 	public String getMyIpAddress() {
@@ -109,5 +117,12 @@ public class Server {
 	public void setClientForServer(Client clientForServer) {
 		this.clientForServer = clientForServer;
 		clients.add(clientForServer.getOutput());
+		clientForServer.setServerHalf(this);
 	}
+
+	public void sendMessage(String outgoing, String exactTimeIPAddress) {
+		clientHandler.sendEveryone(outgoing, exactTimeIPAddress);
+		}
+		
+	
 }
