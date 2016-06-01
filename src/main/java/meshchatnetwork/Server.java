@@ -10,8 +10,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.JTextArea;
 
 public class Server {
@@ -24,6 +24,7 @@ public class Server {
 	private String myName;
 	private JTextArea conversation = null;
 	private int port;
+	@SuppressWarnings("unused")
 	private Client clientForServer;
 	public static HashSet<String> exclusiveTimeIP;
 	private Thread thread;
@@ -37,9 +38,6 @@ public class Server {
 
 	}
 
-	public Server() {
-
-	}
 
 	public void startRunning() {
 
@@ -64,6 +62,7 @@ public class Server {
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 								String clientAddress = socket.getInetAddress().toString();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
+								clients.clear();
 								clients.add(writer);
 								clientHandler = new ClientHandler(socket, conversation, clients);
 								thread = new Thread(clientHandler);

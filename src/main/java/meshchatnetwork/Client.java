@@ -69,11 +69,7 @@ public class Client {
 								incoming = input.readLine();
 								if (Server.exclusiveTimeIP.add(exactTime)) {
 									conversation.append(incoming + "\n");
-									// need to send to e/o here calling server
-									// side of self...
-									System.out.println("before");
 									serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
-									System.out.println("after");
 								}
 							}
 						} catch (Exception e) {
@@ -96,8 +92,8 @@ public class Client {
 			output.println(message);
 			output.flush();
 		} catch (Exception e) {
-			System.out.println("couldn't send");
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Message could not be sent");
+
 		}
 	}
 
@@ -113,28 +109,5 @@ public class Client {
 		return input;
 	}
 
-	public void listenerForMessages() {
-		Thread readerThread = new Thread(new Runnable() {
-
-			public void run() {
-				String exactTime;
-				String incoming;
-				try {
-					while ((exactTime = input.readLine()) != null) {
-						incoming = input.readLine();
-						if (Server.exclusiveTimeIP.add(exactTime)) {
-							conversation.append(incoming + "\n");
-							// need to send to e/o here calling server side of
-							// self...
-							System.out.println("before");
-							serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
-							System.out.println("after");
-						}
-					}
-				} catch (Exception e) {
-				}
-			}
-		});
-		readerThread.start();
-	}
+	
 }

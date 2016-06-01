@@ -110,7 +110,6 @@ public class MeshChatGUI extends JFrame {
 		JPanel bottomSouth = new JPanel();
 		bottomCenter.add(scrollPane2);
 		bottomCenter.add(send);
-	//	send.setEnabled(false);
 		bottomSouth.add(save);
 		bottom.add(bottomCenter, BorderLayout.CENTER);
 		bottom.add(bottomSouth, BorderLayout.SOUTH);
@@ -132,7 +131,6 @@ public class MeshChatGUI extends JFrame {
 				} else {
 					// when you request to connect to server, then you become a
 					// client
-
 					try {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
@@ -141,11 +139,8 @@ public class MeshChatGUI extends JFrame {
 								notifyMsg.setText("Connected");
 								clientForServer = client;
 								server.setClientForServer(clientForServer);
-								//client.listenerForMessages();
 								connect.setEnabled(false);
-							//	send.setEnabled(true);
 								top.remove(topCenter);
-								//System.out.println(server);
 							} else {
 								notifyMsg.setText("Unable to Connect");
 							}
@@ -163,7 +158,6 @@ public class MeshChatGUI extends JFrame {
 
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					// if serverIP == null, give it focus
 					e.consume();
 					connect.doClick();
 				}
@@ -180,7 +174,6 @@ public class MeshChatGUI extends JFrame {
 
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					// if serverPort == null, give it focus
 					e.consume();
 					connect.doClick();
 				}
@@ -208,7 +201,7 @@ public class MeshChatGUI extends JFrame {
 					text.setText("");
 					text.requestFocus();
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "You must form a connection in order to send messages.");
+					JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
 					text.setText("");
 				}
 			}
@@ -248,7 +241,6 @@ public class MeshChatGUI extends JFrame {
 					bw.close();
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "The log was not saved successfully.");
-					ex.printStackTrace();
 				}
 			}
 		});
