@@ -137,12 +137,7 @@ public class MeshChatGUI extends JFrame {
 						if (valid) {
 							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
 								notifyMsg.setText("Connected");
-<<<<<<< HEAD
 								server.setClientForServer(client);
-=======
-								clientForServer = client;
-								server.setClientForServer(clientForServer);
->>>>>>> f63dbe063865706eea1bff90de904e8a73c9031b
 								connect.setEnabled(false);
 								top.remove(topCenter);
 							} else {
