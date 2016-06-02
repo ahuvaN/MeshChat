@@ -14,22 +14,18 @@ public class Client {
 	private BufferedReader input;
 	private Socket client;
 	private JTextArea conversation;
+	private String serverTime;
 
 	private Server serverHalf;
 
-	public void setServerHalf(Server serverHalf) {
-		this.serverHalf = serverHalf;
+	public void setServerHalf(Server server) {
+		serverHalf = server;
 	}
 
 	public Client(JTextArea chat) throws Exception {
 		conversation = chat;
 	}
 
-	/**
-	 * @param prt
-	 *            - determines if prt is 4 characters and valid integer
-	 * @return int- if successfully converted throws exception if not
-	 */
 	private int isValidPort(String prt) throws Exception {
 		if (prt.length() >= 2 && prt.length() <= 5) {
 			try {
@@ -44,20 +40,17 @@ public class Client {
 		throw new Exception();
 	}
 
-	/**
-	 * @param ip
-	 *            - string IP of server
-	 * @param port
-	 *            - the port of server
-	 * @return true is successfully connected to server
-	 */
-	public boolean connectToServer(String IP, String prt) {
+	public boolean connectToServer(String IP, String prt, String myName) {
 		try {
 			int port = isValidPort(prt);
 			client = new Socket(IP, port);
 			input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			output = new PrintWriter(client.getOutputStream());
-			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
+			output.println(myName);
+			output.flush();
+			serverTime = input.readLine();
+			String name = input.readLine();
+			conversation.append("\tSuccessfully connected to server " + name + "\n");
 			new Thread(new Runnable() {
 
 				public void run() {
@@ -67,8 +60,11 @@ public class Client {
 						try {
 							while ((exactTime = input.readLine()) != null) {
 								incoming = input.readLine();
+
 								if (Server.exclusiveTimeIP.add(exactTime)) {
-									conversation.append(incoming + "\n");
+									if (!exactTime.equals(serverTime)) {
+										conversation.append("\t" + incoming + "\n");
+									}
 									serverHalf.getClientHandler().sendEveryone(incoming, exactTime);
 								}
 							}
@@ -87,8 +83,7 @@ public class Client {
 
 	public void sendMessage(String message, String exactTime) {
 		try {
-			output.write(exactTime);
-			output.println();
+			output.println(exactTime);
 			output.println(message);
 			output.flush();
 		} catch (Exception e) {
@@ -109,5 +104,4 @@ public class Client {
 		return input;
 	}
 
-	
 }

@@ -14,20 +14,15 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
-	@SuppressWarnings("unused")
-	private PrintWriter output;
 	private List<PrintWriter> clients;
 
-	public ClientHandler(Socket socket, JTextArea convo,
-			List<PrintWriter> clients) {
+	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> list) {
 		try {
 
-			this.clients = clients;
+			clients = list;
 			conversation = convo;
 			clientsocket = socket;
-			reader = new BufferedReader(new InputStreamReader(
-					clientsocket.getInputStream()));
-			output = new PrintWriter(clientsocket.getOutputStream());
+			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,12 +34,10 @@ public class ClientHandler implements Runnable {
 
 		try {
 			while ((exactTime = reader.readLine()) != null) {
+				message = reader.readLine();
 				if (Server.exclusiveTimeIP.add(exactTime)) {
-					message = reader.readLine();
 					conversation.append(message + "\n");
 					sendEveryone(message, exactTime);
-				} else {
-					reader.readLine();
 				}
 			}
 		} catch (Exception e) {
@@ -57,10 +50,9 @@ public class ClientHandler implements Runnable {
 		Iterator<PrintWriter> iter = clients.iterator();
 		while (iter.hasNext()) {
 			try {
-				
+
 				PrintWriter writer = iter.next();
-				writer.write(exactTime);
-				writer.println();
+				writer.println(exactTime);
 				writer.println(message);
 				writer.flush();
 
