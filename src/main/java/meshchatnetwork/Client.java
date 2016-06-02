@@ -51,13 +51,16 @@ public class Client {
 	 *            - the port of server
 	 * @return true is successfully connected to server
 	 */
-	public boolean connectToServer(String IP, String prt) {
+	public boolean connectToServer(String IP, String prt, String myName) {
 		try {
 			int port = isValidPort(prt);
 			client = new Socket(IP, port);
 			input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			output = new PrintWriter(client.getOutputStream());
-			conversation.append("\n\t      Successfully connected to server " + IP + "\n");
+			output.println(myName);
+			output.flush();
+			String name = input.readLine();
+			conversation.append("\tSuccessfully connected to " + name + "\n");
 			new Thread(new Runnable() {
 
 				public void run() {

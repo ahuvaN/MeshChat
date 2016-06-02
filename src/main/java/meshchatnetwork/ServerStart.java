@@ -99,6 +99,8 @@ public class ServerStart extends JFrame {
 
 	public static void main(String[] args) {
 		ServerStart s = new ServerStart();
+		s.pack();
+		s.setLocationRelativeTo(null);
 		s.setVisible(true);
 	}
 

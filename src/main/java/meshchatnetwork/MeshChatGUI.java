@@ -96,7 +96,7 @@ public class MeshChatGUI extends JFrame {
 
 		top = new JPanel(new BorderLayout());
 		topCenter = new JPanel();
-		top.add(new JLabel(myName + "'s IP Address: " + server.getMyIpAddress() + "      Using port: " + port,
+		top.add(new JLabel(myName + "'s IP: " + server.getMyIpAddress() + "      port: " + port,
 				SwingConstants.CENTER), BorderLayout.NORTH);
 		topCenter.add(new JLabel("Enter IP Address: "));
 		topCenter.add(serverIP);
@@ -140,7 +140,7 @@ public class MeshChatGUI extends JFrame {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
+							if (client.connectToServer(serverIP.getText(), serverPort.getText(), myName)) {
 								notifyMsg.setText("Connected");
 								clientForServer = client;
 								server.setClientForServer(clientForServer);

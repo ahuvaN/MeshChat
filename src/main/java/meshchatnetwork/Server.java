@@ -60,13 +60,15 @@ public class Server {
 								socket = server.accept();
 								output = new PrintWriter(socket.getOutputStream());
 								input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-								String clientAddress = socket.getInetAddress().toString();
+								output.println(myName);
+								output.flush();
+								String name = input.readLine();
 								PrintWriter writer = new PrintWriter(socket.getOutputStream());
 								clients.add(writer);
 								clientHandler = new ClientHandler(socket, conversation, clients);
 								thread = new Thread(clientHandler);
 								thread.start();
-								conversation.append("\n\t     Got a new connection from " + clientAddress + "\n");
+								conversation.append("\tGot a new connection from " + name + "\n");
 							} catch (Exception e) {
 							}
 						}
