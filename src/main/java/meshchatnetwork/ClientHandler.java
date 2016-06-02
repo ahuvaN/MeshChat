@@ -14,15 +14,19 @@ public class ClientHandler implements Runnable {
 	private Socket clientsocket;
 	private JTextArea conversation;
 	private BufferedReader reader;
+	@SuppressWarnings("unused")
+	private PrintWriter output;
 	private List<PrintWriter> clients;
-
-	public ClientHandler(Socket socket, JTextArea convo, List<PrintWriter> list) {
+	public ClientHandler(Socket socket, JTextArea convo,
+			List<PrintWriter> clients) {
 		try {
 
-			clients = list;
+			this.clients = clients;
 			conversation = convo;
 			clientsocket = socket;
-			reader = new BufferedReader(new InputStreamReader(clientsocket.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(
+					clientsocket.getInputStream()));
+			output = new PrintWriter(clientsocket.getOutputStream());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -34,10 +38,12 @@ public class ClientHandler implements Runnable {
 
 		try {
 			while ((exactTime = reader.readLine()) != null) {
-				message = reader.readLine();
-				if (Server.exclusiveTimeIP.add(exactTime)) {
+				if (Server.exclusiveTimeIP.add(exactTime)) {	
+					message = reader.readLine();
 					conversation.append(message + "\n");
 					sendEveryone(message, exactTime);
+				} else {
+					reader.readLine();
 				}
 			}
 		} catch (Exception e) {
@@ -46,13 +52,14 @@ public class ClientHandler implements Runnable {
 	}
 
 	public void sendEveryone(String message, String exactTime) {
-
+		//conversation.append(message + "\n");
 		Iterator<PrintWriter> iter = clients.iterator();
 		while (iter.hasNext()) {
 			try {
-
+				
 				PrintWriter writer = iter.next();
-				writer.println(exactTime);
+				writer.write(exactTime);
+				writer.println();
 				writer.println(message);
 				writer.flush();
 

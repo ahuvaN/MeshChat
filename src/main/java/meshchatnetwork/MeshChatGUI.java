@@ -2,6 +2,7 @@ package meshchatnetwork;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -27,8 +28,9 @@ public class MeshChatGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Server server;
-	private Client client;
+	private Client client, clientForServer;
 	private JTextArea conversation, text;
+	private JLabel notifyMsg;
 	private JPanel top, topCenter;
 	private JButton connect, send, save;
 	private JTextField serverIP, serverPort;
@@ -67,22 +69,26 @@ public class MeshChatGUI extends JFrame {
 		conversation.setEditable(false);
 		conversation.setLineWrap(true);
 		conversation.setWrapStyleWord(true);
+		conversation.setMargin(new Insets(0, 10, 0, 10));
+		notifyMsg = new JLabel("");
 		serverIP = new JTextField(10);
 		serverPort = new JTextField(4);
 		connect = new JButton("Connect"); // client to connect to a server
 		send = new JButton("Send"); // server sending out to all clients in its
 		// branches
 		text = new JTextArea();
+		text.setLineWrap(true);
+		text.setWrapStyleWord(true);
+		text.setMargin(new Insets(5, 5, 0, 5));
 		save = new JButton("Save Chat");
-		conversation.setBounds(0, 0, 500, 700);
 
 	}
 
 	private void addComponents() {
 		JScrollPane scrollPane1 = new JScrollPane(conversation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane1.setPreferredSize(new Dimension(525, 725));
-		scrollPane1.setBounds(0, 0, 500, 500);
+		scrollPane1.setPreferredSize(new Dimension(525, 570));
+		
 
 		JScrollPane scrollPane2 = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -97,6 +103,7 @@ public class MeshChatGUI extends JFrame {
 		topCenter.add(new JLabel("Enter Server Port: "));
 		topCenter.add(serverPort);
 		topCenter.add(connect);
+		topCenter.add(notifyMsg);
 		top.add(topCenter, BorderLayout.CENTER);
 
 		JPanel center = new JPanel();
@@ -120,10 +127,12 @@ public class MeshChatGUI extends JFrame {
 		connect.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
+				notifyMsg.setText(""); // clears error message
 
 				// first check that serverIP and serverPort are not null
 				if (serverIP.getText().isEmpty() || serverPort.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Please enter a valid IP and valid port");
+					serverIP.requestFocus();
 				} else {
 					// when you request to connect to server, then you become a
 					// client
@@ -131,10 +140,16 @@ public class MeshChatGUI extends JFrame {
 						client = new Client(conversation);
 						boolean valid = validateIP(serverIP.getText());
 						if (valid) {
-							if (client.connectToServer(serverIP.getText(), serverPort.getText(), myName)) {
-								server.setClientForServer(client);
+							if (client.connectToServer(serverIP.getText(), serverPort.getText())) {
+								notifyMsg.setText("Connected");
+								clientForServer = client;
+								server.setClientForServer(clientForServer);
 								connect.setEnabled(false);
 								top.remove(topCenter);
+								text.requestFocus();
+								conversation.append("\n");
+							} else {
+								notifyMsg.setText("Unable to Connect");
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Invalid IP Address. Please try again.");
@@ -181,20 +196,22 @@ public class MeshChatGUI extends JFrame {
 		send.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
+				if (!text.getText().trim().equals("")) {
+					String outgoing = myName + ": " + text.getText();
+					String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
+					try {
+						if (client != null) {
+							client.sendMessage(outgoing, exactTimeIPAddress);
+						} else if (client == null) {
+							server.sendMessage(outgoing, exactTimeIPAddress);
+						}
 
-				String outgoing = myName + ": " + text.getText();
-				String exactTimeIPAddress = String.valueOf(System.currentTimeMillis()) + serverIP.getText();
-				try {
-					if (client != null) {
-						client.sendMessage(outgoing, exactTimeIPAddress);
-					} else if (client == null) {
-						server.sendMessage(outgoing, exactTimeIPAddress);
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
+						text.setText("");
 					}
 					text.setText("");
 					text.requestFocus();
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, "You have no connections - find a friend to chat");
-					text.setText("");
 				}
 			}
 		});
